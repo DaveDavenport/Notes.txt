@@ -46,64 +46,7 @@ then
     notes_vcs_check_updates;
 fi
 
-while (( "$#"))
-do
-    arg="$1"
-    case "$arg" in 
-        # Edit
-        edit)
-            # Get next argument 
-            shift
-            note="" 
-            notes_get_from_id "$1" note
-            notes_edit "$note"
-        ;;
-        # View
-        view)
-            # Get next argument 
-            shift
-            note="" 
-            notes_get_from_id "$1" note
-            notes_view "$note" 
-        ;;
-        push)
-            notes_info "Pushing changes"
-            notes_vcs_push_changes;
-        ;;
-        pull)
-            # Check updates
-            notes_info "Check for updates"
-            notes_vcs_check_updates;
-        ;;
-        add)
-            shift
-            if [ -z "$1" ]
-            then
-                notes_error "You need to specify a category: add <category>"
-                exit 1;
-            fi
-            # Add a note
-            notes_add $1;
-        ;;
-        delete)
-            notes_info "Deleting note"
-            shift
-            note="" 
-            notes_get_from_id "$1" note
-            notes_delete "$note"
-        ;;
-        #List/other
-        *)
-            notes_info "Listing notes:"
-            shift
-            notes_list "$@";
-            popd > /dev/null
-            exit 0;
-        ;;
-    esac
-    # Next argument
-    shift
-done
+notes_main_run_commands "${@}"
 
 notes_vcs_commit_changes
 if [ "${HAS_INET}" == 1 ]
