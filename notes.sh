@@ -98,7 +98,8 @@ do
         #List/other
         *)
             notes_info "Listing notes:"
-            notes_list;
+            shift
+            notes_list "$@";
             popd > /dev/null
             exit 0;
         ;;

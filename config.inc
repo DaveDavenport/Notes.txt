@@ -8,5 +8,9 @@ EDITOR=vim
 
 if nm-online
 then
-    HAS_INET=1
+    nm-tool | grep -e "^[\t ]Address" | grep -e "(131.155|192.150)"
+    if [ $? == 0 ]
+    then
+        HAS_INET=1
+    fi
 fi

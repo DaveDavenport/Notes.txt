@@ -13,6 +13,7 @@ NOTE_COLOR_BLUE="\e[0;34m"
 NOTE_COLOR_MAGENTA="\e[0;35m"
 NOTE_COLOR_CYAN="\e[0;36m"
 NOTE_COLOR_WHITE="\e[0;37m"
+NOTE_COLOR_WHITE_BOLD="\e[1;37m"
 NOTE_COLOR_BLACK_BOLD="\e[1;30m"
 NOTE_COLOR_RED_BOLD="\e[1;31m"
 NOTE_COLOR_GREEN_BOLD="\e[1;32m"
@@ -205,15 +206,58 @@ function notes_validate_config()
     fi
 }
 
+function notes_category_name()
+{
+    local result=$2
+    local __category=$(dirname "$1")
+    __category=${__category/.\/}
+    __category=${__category//\//.}
+    eval $result="'$__category'" 
+}
+
 
 function notes_list()
 {
     local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n )
+    # Get max category length
+    declare -i max_cat_length=0;
+    declare -i id_length=0;
     for file in $NOTES_FILES
     do
-        id=$(basename $file ".txt")
-        name=$(notes_get_name "$file")
-        notes_print " * $id $name"
+        local id=$(basename $file ".txt")
+        local category;
+        notes_category_name "$file" category
+        local length=${#category}
+        if [ $length -gt $max_cat_length ]; then max_cat_length=$((length)); fi
+        length=${#id}
+        if [ $length -gt $id_length ]; then id_length=$length; fi
+    done
+    for file in $NOTES_FILES
+    do
+        declare -i id
+        local category;
+        notes_category_name "$file" category
+        declare -i show=1;
+        if [ -n "$1" ]
+        then
+            show=0;
+            # Check content of file.
+            egrep -q -i -e "$1" "$file" 
+            local in_content=$?
+            if [ $in_content == 0 ] || [[ "${category}" =~ .*"$1".* ]]
+            then
+                show=1;
+            fi
+        fi
+        if [ $show == 1 ]
+        then
+            id=$(basename $file ".txt")
+            name=$(notes_get_name "$file")
+            format=" %-${id_length}s "
+            format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_COLOR_RESET} "
+            format+=" %s\n"
+            printf "$format" "$id" "$category" "$name"
+        fi
     done
 }
 
