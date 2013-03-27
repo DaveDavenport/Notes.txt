@@ -1,5 +1,7 @@
 #!/bin/bash
 
+WORK_DIR="${PWD}"
+
 . ~/.notes.config
 
 if [ $? != 0 ]
@@ -9,7 +11,7 @@ then
 fi
 
 
-COMMANDS=( "edit" "view" "push" "pull" "add" "list" "delete" )
+COMMANDS=( "edit" "view" "push" "pull" "add" "list" "delete" "export")
 
 ###
 # Do not edit below this line.

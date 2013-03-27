@@ -52,13 +52,6 @@ function notes_get_name()
     echo ${HEADING}
 }
 
-function notes_view()
-{
-    # Compile note
-
-    # View it.
-    $EDITOR
-}
 
 
 ##
