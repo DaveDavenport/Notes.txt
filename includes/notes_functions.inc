@@ -137,7 +137,6 @@ function notes_edit()
 
     # Update the edit part in header.
     TIMESTAMP=$(date) 
-    sed -i "s|:Date:.*|:Date: $TIMESTAMP|g" "$file"
 
     # Take a checksum of the file before editing.
     MD5SUM_BEFORE=$(md5sum "$file")
@@ -148,6 +147,7 @@ function notes_edit()
     # Take a checksum of the file after editing.
     MD5SUM_AFTER=$(md5sum "$file")
    
+    sed -i "s|:Date:.*|:Date: $TIMESTAMP|g" "$file"
     # Compare the checksum 
     if [ ! "$MD5SUM_BEFORE" = "$MD5SUM_AFTER" ]
     then
@@ -224,12 +224,13 @@ function notes_list()
 function notes_add()
 {
     local PROJECT=${1//./\/}
-    local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n)
+    local NOTES_FILES=($(find -type f -iname [0-9].txt -printf "%f\n" | sort -n))
     
     declare -i new_id=1;
-    for file in "${NOTES_FILES}"
+    for file in "${NOTES_FILES[@]}"
     do
-        local id=$(basename "$file" ".txt")
+        local id=${file/.txt}
+        echo "$new_id-$id"
         if [ $new_id -lt $id ]
         then
             break;
@@ -263,4 +264,21 @@ function notes_add()
     else
         notes_info "File is unchanged"
     fi
+}
+
+################
+# Delete
+################
+function notes_delete()
+{
+    notes_get_name $1
+    notes_print "Are you sure you want to delete this note:"
+    echo -n "(y/n): "
+    answer="n"
+    read answer
+    if [ $answer == "y" ]
+    then
+        notes_print "Removing task:"
+        notes_vcs_remove_file $1
+    fi 
 }

@@ -9,7 +9,7 @@ then
 fi
 
 
-COMMANDS=( "edit" "view" "push" "pull" "add" "list" )
+COMMANDS=( "edit" "view" "push" "pull" "add" "list" "delete" )
 
 ###
 # Do not edit below this line.
@@ -87,6 +87,13 @@ do
             fi
             # Add a note
             notes_add $1;
+        ;;
+        delete)
+            notes_info "Deleting note"
+            shift
+            note="" 
+            notes_get_from_id "$1" note
+            notes_delete "$note"
         ;;
         #List/other
         *)

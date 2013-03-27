@@ -1,4 +1,4 @@
-PROGRAM_DIR=~/NotesCode/
+PROGRAM_DIR=~/.local/share/notes/
 INCLUDE_DIR=${PROGRAM_DIR}/includes/
 GIT=$(which git)
 NOTE_DIR=~/Notes/
