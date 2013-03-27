@@ -1,6 +1,12 @@
 #!/bin/bash
 
-. config.inc
+. ~/.notes.config
+
+if [ $? != 0 ]
+then
+    echo "Failed to find config file: ~/.notes/config."
+    exit 1;
+fi
 
 
 ###
@@ -20,16 +26,18 @@ notes_vcs_validate_dir "${NOTE_DIR}"
 # Check temp directory.
 notes_check_directory "$TEMP_DIR"
 
-# Check updates
-notes_check_updates;
 
+if [ "${HAS_INET}" == 1 ]
+then
+    notes_vcs_check_updates;
+fi
 
 while (( "$#"))
 do
     arg="$1"
     case "$arg" in 
         # Edit
-        e*)
+        edit)
             # Get next argument 
             shift
             note="" 
@@ -37,19 +45,35 @@ do
             notes_edit "$note"
         ;;
         # View
-        v*)
+        view)
             # Get next argument 
             shift
             note="" 
             notes_get_from_id "$1" note
             notes_view "$note" 
         ;;
-        p*)
+        push)
+            notes_info "Pushing changes"
             notes_vcs_push_changes;
+        ;;
+        pull)
+            # Check updates
+            notes_info "Check for updates"
+            notes_vcs_check_updates;
+        ;;
+        add)
+            shift
+            if [ -z "$1" ]
+            then
+                notes_error "You need to specify a category: add <category>"
+                exit 1;
+            fi
+            # Add a note
+            notes_add $1;
         ;;
         #List/other
         *)
-            notes_info "Listing nodes:"
+            notes_info "Listing notes:"
             notes_list;
             popd > /dev/null
             exit 0;
@@ -60,6 +84,10 @@ do
 done
 
 notes_vcs_commit_changes
+if [ "${HAS_INET}" == 1 ]
+then
+    notes_vcs_push_changes;
+fi
 
 # return.
 popd > /dev/null # ${NOTE_DIR} 

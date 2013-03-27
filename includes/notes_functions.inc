@@ -76,13 +76,6 @@ function notes_check_directory()
     fi
 }
 
-
-function notes_check_updates()
-{
-    notes_info "Check for updates"
-    notes_vcs_check_updates
-}
-
 ##
 # output HTML
 ##
@@ -215,11 +208,59 @@ function notes_validate_config()
 
 function notes_list()
 {
-    NOTES_FILES=$(find -type f -iname [0-9].txt)
+    local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n )
     for file in $NOTES_FILES
     do
         id=$(basename $file ".txt")
         name=$(notes_get_name "$file")
         notes_print " * $id $name"
     done
+}
+
+
+#########
+# Adding
+#########
+function notes_add()
+{
+    local PROJECT=${1//./\/}
+    local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n)
+    
+    declare -i new_id=1;
+    for file in "${NOTES_FILES}"
+    do
+        local id=$(basename "$file" ".txt")
+        if [ $new_id -lt $id ]
+        then
+            break;
+        fi
+        new_id+=1;
+    done
+    # Create the filename
+    file="./$PROJECT/$new_id.txt"
+    local temp_file;
+    __notes_edit_tmp_filename "$file" temp_file
+    # Pipe in template:
+    echo -e "{My Title}\n==============\n:Date: $(date)\n:Author: My name\n\ntext" > "$temp_file"
+
+    # Take a checksum of the file before editing.
+    local MD5SUM_BEFORE=$(md5sum "$temp_file")
+
+    # Editing the file
+    $EDITOR "$temp_file"
+
+    # Take a checksum of the file after editing.
+    MD5SUM_AFTER=$(md5sum "$temp_file")
+   
+    # Compare the checksum 
+    if [ ! "$MD5SUM_BEFORE" = "$MD5SUM_AFTER" ]
+    then
+        notes_info "File has been changed, updating"
+        notes_check_directory $(dirname $file)
+        cp "$temp_file" "$file"
+        notes_vcs_add_changes "$file"
+        # TODO: commit
+    else
+        notes_info "File is unchanged"
+    fi
 }

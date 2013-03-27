@@ -13,13 +13,16 @@ function notes_vcs_check_updates()
         notes_info "Applying changes"
         $GIT stash pop --quiet
         if [ $? == 1 ]; then notes_error "Failed to apply the changes, please fix manually."; exit 1; fi
-    fi
+     else
+        $GIT pull --quiet
+        if [ $? == 1 ]; then notes_error "Failed to pull the changes, please fix manually."; exit 1; fi
+     fi
 }
 
 #param 1 the file that changed
 function notes_vcs_add_changes()
 {
-    $GIT add --quiet "$1"
+    $GIT add "$1"
     if [ $? == 1 ]
     then 
         notes_error "Failed to add file: %1.";
@@ -36,7 +39,7 @@ function notes_vcs_commit_changes()
     then
         notes_info "Commiting changes"
         DATE=$(date)
-        $GIT commit --quiet -m "Auto updated on $DATE"
+        $GIT commit -m "Auto updated on $DATE"
         if [ $? == 1 ]
         then
             notes_error "Failed to commit changes";
@@ -47,11 +50,17 @@ function notes_vcs_commit_changes()
 
 function notes_vcs_push_changes()
 {
-    $GIT push --quiet
+    PARENT_BRANCH=$($GIT rev-parse --abbrev-ref --symbolic-full-name @{u})
+    $GIT diff-index --quiet "${PARENT_BRANCH}" --
     if [ $? == 1 ]
     then
-        notes_error "Pushing to remote server"
-        exit 1;
+        notes_info "Pushing changes"
+        $GIT push --quiet
+        if [ $? == 1 ]
+        then
+            notes_error "Pushing to remote server"
+            exit 1;
+        fi
     fi
 }
 
