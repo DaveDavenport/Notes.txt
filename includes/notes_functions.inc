@@ -160,6 +160,7 @@ function notes_edit()
     then
         notes_info "File has been changed, updating"
         cp "$file" "$1"
+        notes_vcs_add_changes "$1"
         # TODO: commit
     else
         notes_info "File is unchanged"

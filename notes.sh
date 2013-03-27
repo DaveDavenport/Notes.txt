@@ -51,5 +51,7 @@ do
     shift
 done
 
+notes_vcs_commit_changes
+
 # return.
 popd > /dev/null # ${NOTE_DIR} 
