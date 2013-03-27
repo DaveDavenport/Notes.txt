@@ -1,18 +1,14 @@
 #!/bin/bash
 
-NOTE_DIR=~/Notes/
-TEMP_DIR=~/Notes/.temp/
-ASCIIDOC=asciidoc
-VCS_UPDATE="git pull"
-VCS_COMMIT="git commit"
-EDITOR=vim
+. config.inc
 
 
 ###
 # Do not edit below this line.
 ###
-source ./notes_functions.inc
+source ./includes/notes_functions.inc
 
+notes_validate_config
 # go to the Notes directory.
 pushd "${NOTE_DIR}" > /dev/null
 

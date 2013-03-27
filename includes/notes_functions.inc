@@ -1,3 +1,7 @@
+
+# Include the VCS stuff
+. $NOTE_DIR/includes/notes_vcs.inc
+
 # List of colors.
 # TODO: Move into notes_colors.inc
 NOTE_COLOR_RESET="\e[0m"
@@ -76,7 +80,7 @@ function notes_check_directory()
 function notes_check_updates()
 {
     notes_info "Check for updates"
-    $VCS_UPDATE
+    notes_vcs_check_updates
 }
 
 ##
@@ -175,4 +179,34 @@ function notes_get_from_id()
         exit 1;
     fi
     eval $result="'$note_file'"
+}
+
+
+# Validate the config.
+function notes_validate_config()
+{
+    # GIT
+    if [ -z "$GIT" ] || [ ! -x $(which $GIT) ]
+    then
+        notes_error "Failed to find a valid GIT: $GIT"
+        exit 1;
+    fi
+    # ASCIIDOC
+    if [ -z "$ASCIIDOC" ] || [ ! -x $(which $ASCIIDOC) ]
+    then
+        notes_error "Failed to find a valid asciidoc: $ASCIIDOC"
+        exit 1;
+    fi
+    # EDITOR
+    if [ -z "$EDITOR" ] || [ ! -x $(which $EDITOR) ]
+    then
+        notes_error "Failed to find a valid editor: $EDITOR"
+        exit 1;
+    fi
+    # Directory
+    if [ ! -d "$NOTE_DIR" ] 
+    then
+        notes_error "Failed to find the NOTE directory: $NOTE_DIR"
+        exit 1;
+    fi
 }
