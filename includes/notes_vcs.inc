@@ -44,3 +44,13 @@ function notes_vcs_commit_changes()
         fi
     fi
 }
+
+function notes_vcs_push_changes()
+{
+    $GIT push --quiet
+    if [ $? == 1 ]
+    then
+        notes_error "Pushing to remote server"
+        exit 1;
+    fi
+}

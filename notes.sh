@@ -43,6 +43,9 @@ do
             notes_get_from_id "$1" note
             notes_view "$note" 
         ;;
+        p*)
+            notes_vcs_push_changes;
+        ;;
         #List/other
         *)
         ;;
