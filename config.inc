@@ -1,11 +1,19 @@
+# Location of the include files.
 PROGRAM_DIR=~/.local/share/notes/
 INCLUDE_DIR=${PROGRAM_DIR}/includes/
-GIT=$(which git)
-NOTE_DIR=~/Notes/
-TEMP_DIR=~/Notes/.temp/
-ASCIIDOC=asciidoc
-EDITOR=vim
 
+# Location of the notes.
+NOTE_DIR=~/Notes/
+
+# Tools that are used.
+GIT=$(which git)
+ASCIIDOC=$(which asciidoc)
+EDITOR=$(which vim)
+
+# Temporary directory
+TEMP_DIR=${NOTE_DIR}/.temp/
+
+# check online status
 NM_TOOL=$(which nm-online)
 
 if [ -n "${NM_TOOL}" ]

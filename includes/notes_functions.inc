@@ -146,11 +146,11 @@ function notes_edit()
     if [ ! "$MD5SUM_BEFORE" = "$MD5SUM_AFTER" ]
     then
         notes_info "File has been changed, updating"
-        cp "$file" "$1"
+        mv "$file" "$1"
         notes_vcs_add_changes "$1"
-        # TODO: commit
     else
         notes_info "File is unchanged"
+        rm "$file"
     fi
 }
 
