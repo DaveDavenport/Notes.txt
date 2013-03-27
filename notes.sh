@@ -9,6 +9,8 @@ then
 fi
 
 
+COMMANDS=( "edit" "view" "push" "pull" "add" "list" )
+
 ###
 # Do not edit below this line.
 ###
@@ -20,6 +22,20 @@ notes_validate_config
 # go to the Notes directory.
 pushd "${NOTE_DIR}" > /dev/null
 
+# Handle autocomplete
+#TODO: make function.
+if [ "$1" == "--complete" ]
+then
+    if [ $# == 2 ]
+    then
+        for command in "${COMMANDS[@]}"
+        do
+            echo "$command"
+        done
+    fi
+    popd > /dev/null;
+    exit 0;
+fi
 # check vcs directory
 notes_vcs_validate_dir "${NOTE_DIR}"
 

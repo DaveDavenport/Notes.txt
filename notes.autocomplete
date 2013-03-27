@@ -1,0 +1,9 @@
+
+_notes()
+{
+	curw=${COMP_WORDS[COMP_CWORD]}
+    unset COMP_WORDS[$COMP_CWORD]
+	COMPREPLY=($(compgen -W '$(notes.sh --complete ${COMP_WORDS[@]})' -- $curw))
+}
+
+complete -F _notes notes.sh
