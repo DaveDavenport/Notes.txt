@@ -29,6 +29,7 @@ notes_check_directory "$TEMP_DIR"
 
 if [ "${HAS_INET}" == 1 ]
 then
+    notes_info "Check for updates"
     notes_vcs_check_updates;
 fi
 
@@ -86,6 +87,7 @@ done
 notes_vcs_commit_changes
 if [ "${HAS_INET}" == 1 ]
 then
+    notes_info "Pushing changes"
     notes_vcs_push_changes;
 fi
 
