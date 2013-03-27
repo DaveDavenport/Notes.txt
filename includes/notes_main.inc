@@ -55,7 +55,7 @@ function notes_complete_command_list()
     for file in ${NOTES_FILES[@]}
     do
         local category
-        notes_category_name "$file" category
+        __notes_category_name "$file" category
         echo "${category}"
     done
 
@@ -170,13 +170,19 @@ function notes_main_run_commands()
 {
     # Automatically find, if available, the completion function.
     local command=notes_main_run_"${1}" 
-    if [ "$(type -t $command)" == "function" ]
+    
+    if [ "$#" -gt 0 ]
     then
-        shift
-        $command "${@}"
+        if [ "$(type -t $command)" == "function" ]
+        then
+            shift
+            $command "${@}"
+        else
+            notes_error "Function ${1} note found"
+            exit 1;
+        fi
     else
-        notes_error "Function ${1} note found"
-        exit 1;
+        notes_main_run_list
     fi
 }
 

@@ -199,7 +199,7 @@ function notes_validate_config()
     fi
 }
 
-function notes_category_name()
+function __notes_category_name()
 {
     local result=$2
     local __category=$(dirname "$1")
@@ -208,7 +208,9 @@ function notes_category_name()
     eval $result="'$__category'" 
 }
 
-
+################
+# List
+################
 function notes_list()
 {
     local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n )
@@ -219,7 +221,7 @@ function notes_list()
     do
         local id=$(basename $file ".txt")
         local category;
-        notes_category_name "$file" category
+        __notes_category_name "$file" category
         local length=${#category}
         if [ $length -gt $max_cat_length ]; then max_cat_length=$((length)); fi
         length=${#id}
@@ -229,7 +231,7 @@ function notes_list()
     do
         declare -i id
         local category;
-        notes_category_name "$file" category
+        __notes_category_name "$file" category
         declare -i show=1;
         if [ -n "$1" ]
         then
