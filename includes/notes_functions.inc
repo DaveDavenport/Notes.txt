@@ -216,6 +216,7 @@ function notes_list()
     done
 
     # Generate header
+    printf "\n"
     printf "${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET} " "ID" 
     printf "${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET} " "Project"
     printf "${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET}\n"  "Description"
