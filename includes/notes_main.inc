@@ -1,3 +1,7 @@
+##############################
+## Completion Functions     ##
+##############################
+
 function notes_complete_command_export()
 {
     if [ "$#" == 0 ]
