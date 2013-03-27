@@ -6,21 +6,22 @@
 ###
 # Do not edit below this line.
 ###
-source ./includes/notes_functions.inc
+source ${INCLUDE_DIR}/notes_functions.inc
 
 notes_validate_config
+
+
 # go to the Notes directory.
 pushd "${NOTE_DIR}" > /dev/null
+
+# check vcs directory
+notes_vcs_validate_dir "${NOTE_DIR}"
 
 # Check temp directory.
 notes_check_directory "$TEMP_DIR"
 
 # Check updates
 notes_check_updates;
-
-
-# Get a list of NOTES files.
-NOTES_FILES=$(find -type f -iname *.txt)
 
 
 while (( "$#"))
@@ -48,6 +49,10 @@ do
         ;;
         #List/other
         *)
+            notes_info "Listing nodes:"
+            notes_list;
+            popd > /dev/null
+            exit 0;
         ;;
     esac
     # Next argument

@@ -54,3 +54,20 @@ function notes_vcs_push_changes()
         exit 1;
     fi
 }
+
+
+function notes_vcs_validate_dir()
+{
+    TOPLEVEL_DIR=$($GIT rev-parse --show-toplevel)
+    if [ $? != 0 ]
+    then
+        notes_error "Current directory is not a git repository"
+        exit 1;
+    fi
+
+    if [[ "$(stat -L -c \"%d:%i\" $1)" != "$(stat -L -c \"%d:%i\" $TOPLEVEL_DIR)" ]]
+    then
+        notes_error "Current note directory: $1 is not the toplevel Git repository.\nToplevel directory is: $TOPLEVEL_DIR"
+        exit 1;
+    fi
+}

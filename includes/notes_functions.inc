@@ -1,6 +1,6 @@
 
 # Include the VCS stuff
-. $NOTE_DIR/includes/notes_vcs.inc
+. ${INCLUDE_DIR}/notes_vcs.inc
 
 # List of colors.
 # TODO: Move into notes_colors.inc
@@ -210,4 +210,16 @@ function notes_validate_config()
         notes_error "Failed to find the NOTE directory: $NOTE_DIR"
         exit 1;
     fi
+}
+
+
+function notes_list()
+{
+    NOTES_FILES=$(find -type f -iname [0-9].txt)
+    for file in $NOTES_FILES
+    do
+        id=$(basename $file ".txt")
+        name=$(notes_get_name "$file")
+        notes_print " * $id $name"
+    done
 }
