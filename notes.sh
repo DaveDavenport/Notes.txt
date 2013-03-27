@@ -15,6 +15,7 @@ COMMANDS=( "edit" "view" "push" "pull" "add" "list" "delete" )
 # Do not edit below this line.
 ###
 source ${INCLUDE_DIR}/notes_functions.inc
+source ${INCLUDE_DIR}/notes_main.inc
 
 notes_validate_config
 
@@ -26,13 +27,9 @@ pushd "${NOTE_DIR}" > /dev/null
 #TODO: make function.
 if [ "$1" == "--complete" ]
 then
-    if [ $# == 2 ]
-    then
-        for command in "${COMMANDS[@]}"
-        do
-            echo "$command"
-        done
-    fi
+    shift;
+    # Complete base command
+    notes_complete_commands "$@"
     popd > /dev/null;
     exit 0;
 fi
