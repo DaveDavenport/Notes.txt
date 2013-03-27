@@ -17,7 +17,7 @@ function notes_print()
 ##
 function notes_info()
 {
-    echo -e $NOTE_COLOR_BLUE"$1"$NOTE_COLOR_RESET >&1
+    echo -e $NOTE_COLOR_BLUE"$1"$NOTE_RESET >&1
 }
 
 ##
@@ -25,7 +25,7 @@ function notes_info()
 ##
 function notes_error()
 {
-    echo -e $NOTE_COLOR_RED_BOLD"$1"$NOTE_COLOR_RESET >&2
+    echo -e $NOTE_COLOR_RED_BOLD"$1"$NOTE_RESET >&2
 }
 
 
@@ -198,8 +198,9 @@ function notes_list()
 {
     local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n )
     # Get max category length
-    declare -i max_cat_length=0;
-    declare -i id_length=0;
+    declare -i max_cat_length=7;
+    declare -i id_length=2;
+    declare -i desc_length=11;
     for file in $NOTES_FILES
     do
         local id=$(basename $file ".txt")
@@ -209,7 +210,17 @@ function notes_list()
         if [ $length -gt $max_cat_length ]; then max_cat_length=$((length)); fi
         length=${#id}
         if [ $length -gt $id_length ]; then id_length=$length; fi
+        name=$(notes_get_name "$file")
+        length=${#name}
+        if [ $length -gt $desc_length ]; then desc_length=$length; fi
     done
+
+    # Generate header
+    printf "${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET} " "ID" 
+    printf "${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET} " "Project"
+    printf "${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET}\n"  "Description"
+
+    # Print hits
     for file in $NOTES_FILES
     do
         declare -i id
@@ -231,9 +242,9 @@ function notes_list()
         then
             id=$(basename $file ".txt")
             name=$(notes_get_name "$file")
-            format=" %-${id_length}s) "
-            format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_COLOR_RESET} "
-            format+=" %s\n"
+            format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET} "
+            format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET} "
+            format+="%s\n"
             printf "$format" "$id" "$category" "$name"
         fi
     done
