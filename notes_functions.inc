@@ -18,6 +18,13 @@ NOTE_COLOR_MAGENTA_BOLD="\e[1;35m"
 NOTE_COLOR_CYAN_BOLD="\e[1;36m"
 
 ##
+# Print
+##
+function notes_print()
+{
+    echo -e "$1"
+}
+##
 # Print an information message
 ##
 function notes_info()
@@ -70,4 +77,102 @@ function notes_check_updates()
 {
     notes_info "Check for updates"
     $VCS_UPDATE
+}
+
+##
+# output HTML
+##
+
+#@param 1 The notes file
+#@param 2 The name of output variable.
+function __notes_view_generate_tmp_html_filename()
+{
+    local result=$2;
+    # Sanitize the name for usage in temp dir.
+    local TMP_OUTPUT_FILE_NAME=${1/.\/}
+    TMP_OUTPUT_FILE_NAME=${TMP_OUTPUT_FILE_NAME//\//-}
+    TMP_OUTPUT_FILE_NAME=${TMP_OUTPUT_FILE_NAME//.}
+
+    TMP_OUTPUT_FILE_NAME="${TEMP_DIR}/${TMP_OUTPUT_FILE_NAME}.html"
+
+    eval $result="'$TMP_OUTPUT_FILE_NAME'" 
+}
+
+# @param 1 The note file
+# @param 2 The temp html file
+function __notes_view_generate_html()
+{
+    $ASCIIDOC -o "$2" "$1"
+}
+
+function notes_view()
+{
+    local filename
+    __notes_view_generate_tmp_html_filename $1 filename
+    __notes_view_generate_html $1 $filename
+    xdg-open $filename
+}
+
+##
+# Editing
+##
+
+function __notes_edit_tmp_filename()
+{
+    local result=$2;
+    # Sanitize the name for usage in temp dir.
+    local TMP_OUTPUT_FILE_NAME=${1/.\/}
+    TMP_OUTPUT_FILE_NAME=${TMP_OUTPUT_FILE_NAME//\//-}
+    TMP_OUTPUT_FILE_NAME=${TMP_OUTPUT_FILE_NAME//.}
+
+    TMP_OUTPUT_FILE_NAME="${TEMP_DIR}/${TMP_OUTPUT_FILE_NAME}.txt"
+
+    eval $result="'$TMP_OUTPUT_FILE_NAME'" 
+}
+
+function notes_edit()
+{
+    local file;
+    __notes_edit_tmp_filename "$1" file
+    notes_info  "Editing file: $1"
+    # copy the file
+    cp "$1" "$file"
+
+    # Update the edit part in header.
+    TIMESTAMP=$(date) 
+    sed -i "s|:Date:.*|:Date: $TIMESTAMP|g" "$file"
+
+    # Take a checksum of the file before editing.
+    MD5SUM_BEFORE=$(md5sum "$file")
+
+    # Editing the file
+    $EDITOR "$file"
+
+    # Take a checksum of the file after editing.
+    MD5SUM_AFTER=$(md5sum "$file")
+   
+    # Compare the checksum 
+    if [ ! "$MD5SUM_BEFORE" = "$MD5SUM_AFTER" ]
+    then
+        notes_info "File has been changed, updating"
+        cp "$file" "$1"
+        # TODO: commit
+    else
+        notes_info "File is unchanged"
+    fi
+}
+
+#@param 1 id
+#@param 2 output of filename
+function notes_get_from_id()
+{
+    local note_file
+    local result=$2;
+    note_file=$(find -type f -iname "$1.txt")
+    if [ -z "$note_file" ]
+    then
+        notes_error "Failed to find note: $1"
+        exit 1;
+    fi
+    eval $result="'$note_file'"
 }

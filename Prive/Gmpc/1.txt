@@ -1,41 +1,45 @@
 Keybindings Review
 ==================
+:Author: Qball Cow
+:Date: Wed Mar 27 12:05:29 CET 2013
 
-Maybe it is a good idea to make a set of keys for 'song-list',
+Maybe it is a good idea to make a set of keys for 'song-list' widget,
+(This is the treeview with the columns and the songs content)
 These bindings will be the same everywhere. 
 
 Section 1:
-~~~~~~~~~~
+----------
 
-+A-[0-9] Works also for searching between browsers, this is done based on the order specified by the user.
-q: Should F1-0 follow same scheme
-+<C-Tab> Switch to next browser
-+<C-S-Tab> Switch to prev browser.
+ * +A-[0-9] Works also for searching between browsers, this is done based on the order specified by the user.
+ * q: Should F1-0 follow same scheme
+ * +<C-Tab> Switch to next browser
+ * +<C-S-Tab> Switch to prev browser.
 
--TAB key is used by default to switch focus in GUI programs, not good to bind.
+ * -TAB key is used by default to switch focus in GUI programs, not good to bind.
 
 Section 2:
-~~~~~~~~~~
+----------
 
-X should be crop..  (space-X should do what you specified)
-+ space  Center and select current song.
-- I do not want to implement 'add random'. 
-q: How do you envision going left/right in the play queue?
-/: This works as a filter.
--?: Does not exists, because search is filter, there is no point.
-+Esc: Close filter mode.
-+Enter: Activate active row (aka play).
+ * X should be crop..  (space-X should do what you specified)
+ * + space  Center and select current song.
+ * - I do not want to implement 'add random'. 
+ * q: How do you envision going left/right in the play queue?
+ * /: This works as a filter.
+ * -?: Does not exists, because search is filter, there is no point.
+ * +Esc: Close filter mode.
+ * +Enter: Activate active row (aka play).
+ * +m Edit columns (all song-lists)
 
 Section 3:
-~~~~~~~~~~
--Q: You cannot deque here. Only in play-queue.
--e: Tag editor is deprecated.
+----------
+ * -Q: You cannot deque here. Only in play-queue.
+ * -e: Tag editor is deprecated.
 
 
 Section 4:
-~~~~~~~~~~
+----------
 
-+Add a keybinding to add all the returned results at once.
+ * +Add a keybinding to add all the returned results at once.
 
 Section 5:
 ~~~~~~~~~~
@@ -43,5 +47,7 @@ Section 5:
 See previous remarks.
 
 Section 6:
-~~~~~~~~~~
+----------
+
+See previous remarks.
 
