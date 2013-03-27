@@ -19,3 +19,9 @@ if [ ! -x ~/.local/bin/notes.sh ]
 then
     ln -s $PWD/notes.sh ~/.local/bin/notes.sh
 fi
+
+grep "notes.autocomplete" ~/.bash_functions -q
+if [ $? == 1 ]
+then
+    echo ". $PWD/notes.autocomplete" >> ~/.bash_functions
+fi 
