@@ -16,8 +16,9 @@ function notes_complete_command_export()
         # list files in work dir
         pushd ${WORK_DIR} > /dev/null
         find  -maxdepth 1  -iname "*.html"
-        popd > /dev/null
     fi
+    popd > /dev/null
+    exit 0;
 }
 function notes_complete_command_delete()
 {
@@ -27,6 +28,8 @@ function notes_complete_command_delete()
         local id=$(basename $file ".txt")
         echo "${id}"
     done
+    popd > /dev/null
+    exit 0;
 }
 
 function notes_complete_command_edit()
@@ -37,6 +40,8 @@ function notes_complete_command_edit()
         local id=$(basename $file ".txt")
         echo "${id}"
     done
+    popd > /dev/null
+    exit 0;
 }
 
 function notes_complete_command_view()
@@ -47,6 +52,8 @@ function notes_complete_command_view()
         local id=$(basename $file ".txt")
         echo "${id}"
     done
+    popd > /dev/null
+    exit 0;
 }
 
 function notes_complete_command_list()
@@ -58,7 +65,8 @@ function notes_complete_command_list()
         __notes_category_name "$file" category
         echo "${category}"
     done
-
+    popd > /dev/null
+    exit 0;
 }
 
 function notes_complete_commands()

@@ -2,8 +2,14 @@
 
 WORK_DIR="${PWD}"
 
+##
+# Load config file.
+##
 . ~/.notes.config
 
+##
+# Test if config loaded fine 
+##
 if [ $? != 0 ]
 then
     echo "Failed to find config file: ~/.notes/config."
@@ -11,22 +17,26 @@ then
 fi
 
 
+##
+# The available commands
+##
 COMMANDS=( "edit" "view" "push" "pull" "add" "list" "delete" "export")
 
 ###
 # Do not edit below this line.
 ###
+
+# load include files
 source ${INCLUDE_DIR}/notes_functions.inc
 source ${INCLUDE_DIR}/notes_main.inc
 
+# validate the config
 notes_validate_config
-
 
 # go to the Notes directory.
 pushd "${NOTE_DIR}" > /dev/null
 
 # Handle autocomplete
-#TODO: make function.
 if [ "$1" == "--complete" ]
 then
     shift;
@@ -35,13 +45,14 @@ then
     popd > /dev/null;
     exit 0;
 fi
+
 # check vcs directory
 notes_vcs_validate_dir "${NOTE_DIR}"
 
 # Check temp directory.
 notes_check_directory "$TEMP_DIR"
 
-
+# When online, check updates
 if [ "${HAS_INET}" == 1 ]
 then
     notes_info "Check for updates"
@@ -50,7 +61,10 @@ fi
 
 notes_main_run_commands "${@}"
 
+# commit results, this function checks if anything changed.
 notes_vcs_commit_changes
+
+# When on-line, push updates
 if [ "${HAS_INET}" == 1 ]
 then
     notes_info "Pushing changes"

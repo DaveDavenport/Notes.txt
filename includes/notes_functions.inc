@@ -3,24 +3,7 @@
 . ${INCLUDE_DIR}/notes_vcs.inc
 
 # List of colors.
-# TODO: Move into notes_colors.inc
-NOTE_COLOR_RESET="\e[0m"
-NOTE_COLOR_BLACK="\e[0;30m"
-NOTE_COLOR_RED="\e[0;31m"
-NOTE_COLOR_GREEN="\e[0;32m"
-NOTE_COLOR_YELLOW="\e[0;33m"
-NOTE_COLOR_BLUE="\e[0;34m"
-NOTE_COLOR_MAGENTA="\e[0;35m"
-NOTE_COLOR_CYAN="\e[0;36m"
-NOTE_COLOR_WHITE="\e[0;37m"
-NOTE_COLOR_WHITE_BOLD="\e[1;37m"
-NOTE_COLOR_BLACK_BOLD="\e[1;30m"
-NOTE_COLOR_RED_BOLD="\e[1;31m"
-NOTE_COLOR_GREEN_BOLD="\e[1;32m"
-NOTE_COLOR_YELLOW_BOLD="\e[1;33m"
-NOTE_COLOR_BLUE_BOLD="\e[1;34m"
-NOTE_COLOR_MAGENTA_BOLD="\e[1;35m"
-NOTE_COLOR_CYAN_BOLD="\e[1;36m"
+. ${INCLUDE_DIR}/notes_colors.inc
 
 ##
 # Print
@@ -248,7 +231,7 @@ function notes_list()
         then
             id=$(basename $file ".txt")
             name=$(notes_get_name "$file")
-            format=" %-${id_length}s "
+            format=" %-${id_length}s) "
             format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_COLOR_RESET} "
             format+=" %s\n"
             printf "$format" "$id" "$category" "$name"
@@ -299,7 +282,6 @@ function notes_add()
         notes_check_directory $(dirname $file)
         cp "$temp_file" "$file"
         notes_vcs_add_changes "$file"
-        # TODO: commit
     else
         notes_info "File is unchanged"
     fi
