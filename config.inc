@@ -36,7 +36,6 @@ NOTE_DIR=~/Notes/
 
 # Tools that are used.
 GIT=$(which git)
-ASCIIDOC=$(which asciidoc)
 
 if [ -z "${EDITOR}" ]
 then
@@ -62,3 +61,32 @@ then
 else
     HAS_INET=1
 fi
+
+##
+# This configures what MARKUP tool to use.
+##
+
+############################################
+# ASCIIDOC
+############################################
+
+# The tool to parse input and cat to output.
+MARKUP_PARSER="asciidoc -o -"
+
+# This should extract the description string from the input file.
+NOTES_GET_DESCRIPTION="sed 1q"
+
+# This should modify the timestamp in the input file.
+# \${TIMESTAMP} is the new timestamp, "\${file}"  is the file that will be edited.
+NOTES_MODIFY_DATE="sed -i \"s|:Date:.*|:Date: \${TIMESTAMP}|g\" \"\$file\" "
+
+# A templete (empty) markup file.
+NOTES_TEMPLATE="{My Title}\n==============\n:Date: $(date)\n:Author: My name\n\ntext"
+
+################################################
+# Markup
+################################################
+#MARKUP_PARSER="markdown"
+#NOTES_GET_DESCRIPTION=
+#NOTES_MODIFY_DATE=
+#NOTES_TEMPLATE=

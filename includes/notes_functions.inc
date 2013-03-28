@@ -58,7 +58,7 @@ function notes_error()
 
 function notes_get_name()
 {
-    HEADING=$(head -n 1 "$1")
+    HEADING=$(${NOTES_GET_DESCRIPTION} "$1")
     echo ${HEADING}
 }
 
@@ -103,7 +103,7 @@ function __notes_view_generate_tmp_html_filename()
 # @param 2 The temp html file
 function __notes_view_generate_html()
 {
-    $ASCIIDOC -o "$2" "$1"
+    $MARKUP_PARSER "$1" > "$2"
     if [ $? != 0 ]
     then
         notes_error "Failed to create html file"
@@ -160,8 +160,8 @@ function notes_edit()
     cp "$1" "$file"
 
     # Update the edit part in header.
-    TIMESTAMP=$(date) 
-    sed -i "s|:Date:.*|:Date: $TIMESTAMP (Editing..)|g" "$file"
+    TIMESTAMP="$(date)  (Editing..)"
+    eval ${NOTES_MODIFY_DATE} 
 
     # Take a checksum of the file before editing.
     MD5SUM_BEFORE=$(md5sum "$file")
@@ -173,7 +173,8 @@ function notes_edit()
     TIMESTAMP=$(date) 
     MD5SUM_AFTER=$(md5sum "$file")
    
-    sed -i "s|:Date:.*|:Date: $TIMESTAMP|g" "$file"
+    eval ${NOTES_MODIFY_DATE} 
+
     # Compare the checksum 
     if [ ! "$MD5SUM_BEFORE" = "$MD5SUM_AFTER" ]
     then
@@ -297,7 +298,7 @@ function notes_add()
     local temp_file;
     __notes_edit_tmp_filename "$file" temp_file
     # Pipe in template:
-    echo -e "{My Title}\n==============\n:Date: $(date)\n:Author: My name\n\ntext" > "$temp_file"
+    echo -e "${NOTES_TEMPLATE}" > "$temp_file"
 
     # Take a checksum of the file before editing.
     local MD5SUM_BEFORE=$(md5sum "$temp_file")

@@ -247,10 +247,10 @@ function notes_validate_config()
         notes_error "Failed to find a valid GIT: $GIT"
         exit 1;
     fi
-    # ASCIIDOC
-    if [ -z "$ASCIIDOC" ] || [ ! -x $(which $ASCIIDOC) ]
+    # MARKUP_PARSER
+    if [ -z "$MARKUP_PARSER" ] || [ ! -x $(which $MARKUP_PARSER) ]
     then
-        notes_error "Failed to find a valid asciidoc: $ASCIIDOC"
+        notes_error "Failed to find a valid markup parser: $MARKUP_PARSER"
         exit 1;
     fi
     # EDITOR
