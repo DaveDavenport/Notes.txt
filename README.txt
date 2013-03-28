@@ -1,6 +1,6 @@
 Notes.txt: Command-line Notes application
 ========================================
-:Date: Thu Mar 28 18:04:08 CET 2013
+:Date: Thu Mar 28 18:29:19 CET 2013
 :Author: Qball Cow
 
 notes.txt is a simple command-line note managing application. 
@@ -58,6 +58,7 @@ Therefor it reuses the following tools:
  * *nm-online*: Check if online (optional).
  * *sed*: Automatic edit notes.
  * *vim*: Note editor. (configurable)
+ * *md5sum*: Check if file changed.
 
 Notes.txt will do the following things:
 
