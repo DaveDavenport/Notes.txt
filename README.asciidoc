@@ -1,6 +1,6 @@
 Notes.txt: Command-line Notes application
 ========================================
-:Date: Thu Mar 28 18:29:19 CET 2013
+:Date: Thu Mar 28 20:44:42 CET 2013
 :Author: Qball Cow
 
 notes.txt is a simple command-line note managing application. 
@@ -145,6 +145,16 @@ will be build and displayed.
 --------------------------
     notes.sh list <search regex>
 --------------------------
+A generated list looks like:
+-------------------------
+ID Project      Description                              
+-- ------------ -----------------------------------------
+1  Prive.Gmpc   Keybindings Review
+2  Prive.Notes  Notes.txt: Command-line Notes application
+3  Prive.Others Headphone Research
+4  Prive.Others RSS Alternatives
+-------------------------
+
  * 'export': Export an item
 [source,bash]
 --------------------------
