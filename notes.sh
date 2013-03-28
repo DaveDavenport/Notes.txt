@@ -37,6 +37,7 @@ function notes_check_file()
     if [ ! -f ${1} ]
     then
         echo "Could not find file: ${1}" 2>&1
+        exit 1;
     fi
 }
 
