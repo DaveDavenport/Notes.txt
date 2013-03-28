@@ -1,0 +1,191 @@
+Notes.txt: Command-line Notes application
+========================================
+:Date: Thu Mar 28 18:04:08 CET 2013
+:Author: Qball Cow
+
+notes.txt is a simple command-line note managing application. 
+
+
+WARNING: This is preview release of the program. I only 
+released it to collect ideas on how it can be improved.
+Your data should be relatively save as everything is stored inside a 'git' repository.
+
+
+LICENSE
+-------
+Copyright © 2013, Qball Cow and contributors
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+      
+    * Neither the name of Qball Cow nor the
+      names of contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY Qball Cow ''AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL Qball Cow BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Motivation
+----------
+
+Notes.txt was written because I wanted a simple application to takes notes.
+It had to be command-line and version controlled. A quick search did not turn
+anything up, so I decided to write one myself.
+It tries to re-use as much as possible.
+Therefor it reuses the following tools:
+
+ * *asciidoc*: For markup of each note.
+ * *git*: For version control.
+ * *bash*: To put everything together.
+ * *find*: Find files.
+ * *grep*: Search in files.
+ * *nm-online*: Check if online (optional).
+ * *sed*: Automatic edit notes.
+ * *vim*: Note editor. (configurable)
+
+Notes.txt will do the following things:
+
+ * Allow you to quickly search through your notes.
+ * View each note in the browser.
+ * Commit changes when changed on edit.
+ * Delete notes. 
+ * Push/Pull from remote repository, if online.
+ * Organize notes.
+ * Bash Tab completion.
+ * Export note to html
+
+
+
+Installation
+------------
+
+Notes.txt installation needs the following files installed:
+
+ * 'notes.sh': The main script.
+ * 'includes/*.inc': Helper files with the actual functions.
+ * 'config': The configuration file.
+
+A good installation would be:
+
+ * notes.sh -> ~/.local/bin/
+ * includes -> ~/.local/share/notes/
+ * config -> ~/.notes.config
+
+The first two locations can be configured in the 'config' file. 
+The configuration file should always be in this location.
+
+An included install.sh script (very simple) will link all the files in the right location.
+
+
+Setting up Notes repository
+---------------------------
+
+Notes.txt by default assumes the Notes repository is a checkout from a remote git repository and it can push/pull.
+If this is note desirable, set 'HAS_INET=0' in config. Then it will not automatically push/pull.
+
+[source,bash]
+---------------------
+cd ~/
+git clone <remoterepo> Notes
+---------------------
+
+Or create a new one:
+[source,bash]
+---------------------
+mkdir ~/Notes
+git init . 
+---------------------
+
+Commands
+--------
+
+ * 'add': Add an item.
+[source,bash]
+--------------------------
+    notes.sh add <Project>
+--------------------------
+ * 'remove': Remove an item
+[source,bash]
+--------------------------
+    notes.sh remove <id>
+--------------------------
+ * 'view': View the html rendering of the note
+[source,bash]
+--------------------------
+    notes.sh view <id>
+--------------------------
+ * 'edit': Edit an item
+[source,bash]
+--------------------------
+    notes.sh edit <id>
+--------------------------
+
+NOTE: If you do this on a note that is being edited, the temporary file
+will be build and displayed.
+
+ * 'list': List items
+[source,bash]
+--------------------------
+    notes.sh list <search regex>
+--------------------------
+ * 'export': Export an item
+[source,bash]
+--------------------------
+    notes.sh export <id> <html file>
+--------------------------
+ * 'push': Push local changes to remote git 
+[source,bash]
+-----------------
+    notes.sh push 
+-----------------
+
+ * 'pull': Pull local changes to remote git 
+[source,bash]
+-----------------
+    notes.sh pull 
+-----------------
+
+ *  'clean': Clean out all the temporary files
+[source,bash]
+-----------------
+    notes.sh clean
+-----------------
+
+Download
+--------
+
+You can download the program from github: http://github.com/DaveDavenport/Notes.txt/[here]
+
+
+Feedback
+--------
+
+You can report bugs on github: http://github.com/DaveDavenport/Notes.txt/[here]
+
+Features requests are welcome. Do keep in mind I am trying to keep this program as simple as possible.
+If something more complex is needed I advice you to look at org-mode or desktop wiki applications.
+
+
+Bash auto-complete
+------------------
+
+There is an auto-complete functions in 'notes.autocomplete'.
+
+NOTE: Most of the auto-complete code is build-in. This can be called by putting '--complete' in front of the arguments.
+
