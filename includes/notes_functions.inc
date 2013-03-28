@@ -56,6 +56,18 @@ function notes_error()
 }
 
 
+function notes_validate_category()
+{
+    regex="^[0-9a-zA-Z.]*$"
+    if [[ $1 =~ $regex ]] 
+    then
+        return;
+    else
+        notes_error "Category is invalid: $1"
+        exit 1
+    fi
+}
+
 function notes_get_name()
 {
     HEADING=$(${NOTES_GET_DESCRIPTION} "$1")
@@ -279,9 +291,12 @@ function notes_list()
 #########
 function notes_add()
 {
+    notes_validate_category "${1}"
+
     local PROJECT=${1//./\/}
     local NOTES_FILES=($(find -type f -iname [0-9].txt -printf "%f\n" | sort -n))
-    
+   
+ 
     declare -i new_id=1;
     for file in "${NOTES_FILES[@]}"
     do
@@ -337,3 +352,6 @@ function notes_delete()
         notes_vcs_remove_file $1
     fi 
 }
+
+
+
