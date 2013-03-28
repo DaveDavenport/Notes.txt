@@ -34,7 +34,7 @@ WORK_DIR="${PWD}"
 # check file exists function.
 function notes_check_file()
 {
-    if [ ! -f "$1" ]
+    if [ ! -f ${1} ]
     then
         echo "Could not find file: ${1}" 2>&1
     fi
@@ -43,8 +43,9 @@ function notes_check_file()
 ##
 # Load config file.
 ##
-notes_check_file "~/.notes.config"
-. ~/.notes.config
+CONFIG_FILE=${HOME}/.notes.config
+notes_check_file "${CONFIG_FILE}"
+. ${CONFIG_FILE}
 
 # Test if config loaded fine 
 if [ $? != 0 ]
