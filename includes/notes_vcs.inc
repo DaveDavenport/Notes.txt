@@ -1,3 +1,35 @@
+# Copyright © 2013, Qball Cow and contributors
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+# 
+#     * Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#       
+#     * Neither the name of Qball Cow nor the
+#       names of contributors may be used to endorse or promote products
+#       derived from this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY Qball Cow ''AS IS'' AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL Qball Cow BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+##
+# Pull the latest changes from remote repository.
+##
 function notes_vcs_check_updates()
 {
     # Check for changes.
@@ -19,7 +51,11 @@ function notes_vcs_check_updates()
      fi
 }
 
-#param 1 the file that changed
+##
+# @param 1 the file that changed
+#
+# Stage the changed file.
+##
 function notes_vcs_add_changes()
 {
     $GIT add "$1"
@@ -30,7 +66,9 @@ function notes_vcs_add_changes()
     fi
 }
 
-
+##
+# Commit the staged changed
+##
 function notes_vcs_commit_changes()
 {
     # check for changes.
@@ -48,6 +86,9 @@ function notes_vcs_commit_changes()
     fi
 }
 
+##
+# Push the local commits to the remote location.
+##
 function notes_vcs_push_changes()
 {
     PARENT_BRANCH=$($GIT rev-parse --abbrev-ref --symbolic-full-name @{u})
@@ -64,7 +105,10 @@ function notes_vcs_push_changes()
     fi
 }
 
-
+##
+# @param directory
+# Check if the specified directory is a toplevel git repository
+##
 function notes_vcs_validate_dir()
 {
     TOPLEVEL_DIR=$($GIT rev-parse --show-toplevel)
@@ -81,6 +125,10 @@ function notes_vcs_validate_dir()
     fi
 }
 
+##
+# @param the file to remove
+# Stage removal of file.
+##
 function notes_vcs_remove_file()
 {
     $GIT rm $1
