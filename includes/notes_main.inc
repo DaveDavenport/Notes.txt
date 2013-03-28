@@ -266,3 +266,12 @@ function notes_validate_config()
         exit 1;
     fi
 }
+
+
+function notes_check_file()
+{
+    if [ ! -f "$1" ]
+    then
+        notes_error "Could not find file: ${1}"
+    fi
+}

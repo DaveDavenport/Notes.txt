@@ -28,29 +28,36 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
+# Store the current directory. Used for exporting.
 WORK_DIR="${PWD}"
+
+# check file exists function.
+function notes_check_file()
+{
+    if [ ! -f "$1" ]
+    then
+        echo "Could not find file: ${1}" 2>&1
+    fi
+}
 
 ##
 # Load config file.
 ##
+notes_check_file "~/.notes.config"
 . ~/.notes.config
 
-##
 # Test if config loaded fine 
-##
 if [ $? != 0 ]
 then
     echo "Failed to find config file: ~/.notes/config."
     exit 1;
 fi
 
-
-###
-# Do not edit below this line.
-###
-
 # load include files
+notes_check_file "${INCLUDE_DIR}/notes_globals.inc"
+notes_check_file "${INCLUDE_DIR}/notes_functions.inc"
+notes_check_file "${INCLUDE_DIR}/notes_main.inc"
+
 source ${INCLUDE_DIR}/notes_globals.inc
 source ${INCLUDE_DIR}/notes_functions.inc
 source ${INCLUDE_DIR}/notes_main.inc

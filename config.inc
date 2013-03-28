@@ -38,7 +38,7 @@ NOTE_DIR=~/Notes/
 GIT=$(which git)
 ASCIIDOC=$(which asciidoc)
 
-if [ -n "${EDITOR}" ]
+if [ -z "${EDITOR}" ]
 then
 EDITOR="gvim -f"
 fi
