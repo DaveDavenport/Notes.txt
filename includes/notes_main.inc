@@ -265,6 +265,28 @@ function notes_validate_config()
         notes_error "Failed to find the NOTE directory: $NOTE_DIR"
         exit 1;
     fi
+
+    # md5sum
+    if [ ! -x $(which md5sum) ]
+    then
+        notes_error "Failed to find md5sum"
+        exit 1;
+    fi
+
+    # grep 
+    if [ ! -x $(which grep) ]
+    then
+        notes_error "Failed to find grep"
+        exit 1;
+    fi
+
+
+    # sed 
+    if [ ! -x $(which sed) ]
+    then
+        notes_error "Failed to find sed"
+        exit 1;
+    fi
 }
 
 
