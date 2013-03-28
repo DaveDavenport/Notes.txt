@@ -174,6 +174,22 @@ function notes_main_run_export()
     popd
 }
 
+function notes_main_run_clean()
+{
+    notes_info "Cleaning temporary files"
+    if [ -d "${TEMP_DIR}" ]
+    then
+        notes_print "Are you want to clean out temporary files?"
+        echo -n "(y/n):"
+        local answer="n"
+        read answer
+        if [ $answer == "y" ]
+        then
+            rm -r "${TEMP_DIR}"
+        fi
+    fi
+}
+
 function notes_main_run_commands()
 {
     # Automatically find, if available, the completion function.
@@ -194,3 +210,31 @@ function notes_main_run_commands()
     fi
 }
 
+# Validate the config.
+function notes_validate_config()
+{
+    # GIT
+    if [ -z "$GIT" ] || [ ! -x $(which $GIT) ]
+    then
+        notes_error "Failed to find a valid GIT: $GIT"
+        exit 1;
+    fi
+    # ASCIIDOC
+    if [ -z "$ASCIIDOC" ] || [ ! -x $(which $ASCIIDOC) ]
+    then
+        notes_error "Failed to find a valid asciidoc: $ASCIIDOC"
+        exit 1;
+    fi
+    # EDITOR
+    if [ -z "$EDITOR" ] || [ ! -x $(which $EDITOR) ]
+    then
+        notes_error "Failed to find a valid editor: $EDITOR"
+        exit 1;
+    fi
+    # Directory
+    if [ ! -d "$NOTE_DIR" ] 
+    then
+        notes_error "Failed to find the NOTE directory: $NOTE_DIR"
+        exit 1;
+    fi
+}

@@ -77,13 +77,26 @@ function __notes_view_generate_tmp_html_filename()
 function __notes_view_generate_html()
 {
     $ASCIIDOC -o "$2" "$1"
+    if [ $? != 0 ]
+    then
+        notes_error "Failed to create html file"
+        exit 1;
+    fi
 }
 
 function notes_view()
 {
+    local temp_file;
+    __notes_edit_tmp_filename "$1" temp_file
     local filename
-    __notes_view_generate_tmp_html_filename $1 filename
-    __notes_view_generate_html $1 $filename
+    if [ -f "${temp_file}" ]
+    then
+        __notes_view_generate_tmp_html_filename "${1}" filename
+        __notes_view_generate_html "${temp_file}" $filename
+    else
+        __notes_view_generate_tmp_html_filename "$1" filename
+        __notes_view_generate_html "$1" $filename
+    fi
     xdg-open $filename
 }
 
@@ -109,11 +122,19 @@ function notes_edit()
     local file;
     __notes_edit_tmp_filename "$1" file
     notes_info  "Editing file: $1"
+
+    if [ -f "${file}" ]
+    then
+        notes_error "This note is already being edited"
+        exit 1;
+    fi
+
     # copy the file
     cp "$1" "$file"
 
     # Update the edit part in header.
     TIMESTAMP=$(date) 
+    sed -i "s|:Date:.*|:Date: $TIMESTAMP (Editing..)|g" "$file"
 
     # Take a checksum of the file before editing.
     MD5SUM_BEFORE=$(md5sum "$file")
@@ -122,6 +143,7 @@ function notes_edit()
     $EDITOR "$file"
 
     # Take a checksum of the file after editing.
+    TIMESTAMP=$(date) 
     MD5SUM_AFTER=$(md5sum "$file")
    
     sed -i "s|:Date:.*|:Date: $TIMESTAMP|g" "$file"
@@ -153,34 +175,6 @@ function notes_get_from_id()
 }
 
 
-# Validate the config.
-function notes_validate_config()
-{
-    # GIT
-    if [ -z "$GIT" ] || [ ! -x $(which $GIT) ]
-    then
-        notes_error "Failed to find a valid GIT: $GIT"
-        exit 1;
-    fi
-    # ASCIIDOC
-    if [ -z "$ASCIIDOC" ] || [ ! -x $(which $ASCIIDOC) ]
-    then
-        notes_error "Failed to find a valid asciidoc: $ASCIIDOC"
-        exit 1;
-    fi
-    # EDITOR
-    if [ -z "$EDITOR" ] || [ ! -x $(which $EDITOR) ]
-    then
-        notes_error "Failed to find a valid editor: $EDITOR"
-        exit 1;
-    fi
-    # Directory
-    if [ ! -d "$NOTE_DIR" ] 
-    then
-        notes_error "Failed to find the NOTE directory: $NOTE_DIR"
-        exit 1;
-    fi
-}
 
 function __notes_category_name()
 {
@@ -307,7 +301,7 @@ function notes_delete()
     notes_get_name $1
     notes_print "Are you sure you want to delete this note:"
     echo -n "(y/n): "
-    answer="n"
+    local answer="n"
     read answer
     if [ $answer == "y" ]
     then

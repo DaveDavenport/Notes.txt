@@ -8,7 +8,7 @@ NOTE_DIR=~/Notes/
 # Tools that are used.
 GIT=$(which git)
 ASCIIDOC=$(which asciidoc)
-EDITOR=$(which vim)
+EDITOR="gvim -f"
 
 # Temporary directory
 TEMP_DIR=${NOTE_DIR}/.temp/

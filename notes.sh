@@ -17,16 +17,12 @@ then
 fi
 
 
-##
-# The available commands
-##
-COMMANDS=( "edit" "view" "push" "pull" "add" "list" "delete" "export")
-
 ###
 # Do not edit below this line.
 ###
 
 # load include files
+source ${INCLUDE_DIR}/notes_globals.inc
 source ${INCLUDE_DIR}/notes_functions.inc
 source ${INCLUDE_DIR}/notes_main.inc
 
