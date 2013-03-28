@@ -84,6 +84,22 @@ function notes_complete_command_view()
     exit 0;
 }
 
+function notes_complete_command_add()
+{
+    if [ $# == 0 ]
+    then
+        local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n )
+        for file in ${NOTES_FILES[@]}
+        do
+            local category
+            __notes_category_name "$file" category
+            echo "${category}"
+        done
+    fi
+    popd > /dev/null
+    exit 0;
+}
+
 function notes_complete_command_list()
 {
     local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n )
