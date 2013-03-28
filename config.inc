@@ -20,7 +20,7 @@ if [ -n "${NM_TOOL}" ]
 then
     if ${NM_TOOL}
     then
-        nm-tool | grep -e "^[\t ]Address" | grep -e "(131.155|192.150)"
+        nm-tool | grep -e "^[\t ]*Address:.*" | grep -e "192.150." -e "131.155" > /dev/null
         if [ $? == 0 ]
         then
             HAS_INET=1
