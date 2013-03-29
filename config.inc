@@ -83,6 +83,9 @@ NOTES_MODIFY_DATE="sed -i \"s|:Date:.*|:Date: \${TIMESTAMP}|g\" \"\$file\" "
 # A templete (empty) markup file.
 NOTES_TEMPLATE="{My Title}\n==============\n:Date: $(date)\n:Author: My name\n\ntext"
 
+# Get the file from a note file. Input file is '${note_file}'
+NOTES_GET_DATE="sed -n \"s|:Date: \(.*\)\$|\1|p\" \"\${note_file}\""
+
 ################################################
 # Markup
 ################################################

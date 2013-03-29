@@ -75,6 +75,14 @@ function notes_get_name()
 }
 
 
+function notes_get_date()
+{
+    local note_file="$1";
+    local __result=$2;
+    __date=$(eval ${NOTES_GET_DATE});
+    eval $__result="'${__date}'" 
+}
+
 
 ##
 # Check directory and create
@@ -235,6 +243,7 @@ function notes_list()
     declare -i max_cat_length=7;
     declare -i id_length=2;
     declare -i desc_length=11;
+    declare -i date_length=11;
     for file in $NOTES_FILES
     do
         local id=$(basename $file ".txt")
@@ -247,13 +256,20 @@ function notes_list()
         name=$(notes_get_name "$file")
         length=${#name}
         if [ $length -gt $desc_length ]; then desc_length=$length; fi
+
+        notes_get_date "${file}" id
+        id=$(date -d "${id}" "+%x")
+        length=${#id}
+        if [ $length -gt $date_length ]; then date_length=$length; fi
     done
 
     # Generate header
     printf "\n"
     printf "${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET} " "ID" 
     printf "${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET} " "Project"
-    printf "${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET}\n"  "Description"
+    printf "${NOTE_UNDERLINE}%-${date_length}s${NOTE_RESET} "  "Last edited"
+    printf "${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET} "  "Description"
+    printf "\n"
 
     # Print hits
     for file in $NOTES_FILES
@@ -275,12 +291,18 @@ function notes_list()
         fi
         if [ $show == 1 ]
         then
+            date=""
             id=$(basename $file ".txt")
             name=$(notes_get_name "$file")
+
+            notes_get_date "${file}" date 
+            date=$(date -d "${date}" "+%x")
+
             format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET} "
             format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET} "
+            format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET} "
             format+="%s\n"
-            printf "$format" "$id" "$category" "$name"
+            printf "$format" "$id" "$category" "${date}" "$name"
         fi
     done
 }
