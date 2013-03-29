@@ -258,7 +258,7 @@ function notes_list()
         if [ $length -gt $desc_length ]; then desc_length=$length; fi
 
         notes_get_date "${file}" id
-        id=$(date -d "${id}" "+%x")
+        id=$(date -d "${id}" "+${DATE_FORMAT}")
         length=${#id}
         if [ $length -gt $date_length ]; then date_length=$length; fi
     done
@@ -296,7 +296,7 @@ function notes_list()
             name=$(notes_get_name "$file")
 
             notes_get_date "${file}" date 
-            date=$(date -d "${date}" "+%x")
+            date=$(date -d "${date}" "+${DATE_FORMAT}")
 
             format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET} "
             format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET} "

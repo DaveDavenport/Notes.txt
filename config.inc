@@ -62,6 +62,11 @@ else
     HAS_INET=1
 fi
 
+
+# date format
+DATE_FORMAT="%F"
+
+
 ##
 # This configures what MARKUP tool to use.
 ##
