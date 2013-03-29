@@ -265,10 +265,10 @@ function notes_list()
 
     # Generate header
     printf "\n"
-    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET} " "ID" 
-    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET} " "Project"
-    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${date_length}s${NOTE_RESET} "  "Last edited"
-    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET} "  "Description"
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET}  " "ID" 
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET}  " "Project"
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${date_length}s${NOTE_RESET}  "  "Last edited"
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET}  "  "Description"
     printf "\n"
 
     # Print hits
@@ -298,9 +298,9 @@ function notes_list()
             notes_get_date "${file}" date 
             date=$(date -d "${date}" "+${DATE_FORMAT}")
 
-            format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET} "
-            format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET} "
-            format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET} "
+            format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET}  "
+            format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET}  "
+            format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET}  "
             format+="%s\n"
             printf "$format" "$id" "$category" "${date}" "$name"
         fi
