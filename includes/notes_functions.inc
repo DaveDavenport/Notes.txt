@@ -341,7 +341,7 @@ function notes_add()
     local MD5SUM_BEFORE=$(md5sum "$temp_file")
 
     # Editing the file
-    $EDITOR "$temp_file"
+    eval ${EDITOR} "$temp_file"
 
     # Take a checksum of the file after editing.
     MD5SUM_AFTER=$(md5sum "$temp_file")
