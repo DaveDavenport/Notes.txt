@@ -187,7 +187,7 @@ function notes_edit()
     MD5SUM_BEFORE=$(md5sum "$file")
 
     # Editing the file
-    $EDITOR "$file"
+    eval ${EDITOR} "$file"
 
     # Take a checksum of the file after editing.
     TIMESTAMP=$(date) 

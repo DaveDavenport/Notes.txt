@@ -39,7 +39,7 @@ GIT=$(which git)
 
 if [ -z "${EDITOR}" ]
 then
-EDITOR="gvim -f"
+EDITOR="gvim -c 'set syntax=asciidoc' -f "
 fi
 
 # Temporary directory
