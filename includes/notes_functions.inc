@@ -265,10 +265,10 @@ function notes_list()
 
     # Generate header
     printf "\n"
-    printf "${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET} " "ID" 
-    printf "${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET} " "Project"
-    printf "${NOTE_UNDERLINE}%-${date_length}s${NOTE_RESET} "  "Last edited"
-    printf "${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET} "  "Description"
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET} " "ID" 
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET} " "Project"
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${date_length}s${NOTE_RESET} "  "Last edited"
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET} "  "Description"
     printf "\n"
 
     # Print hits
