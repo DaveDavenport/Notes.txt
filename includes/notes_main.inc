@@ -34,16 +34,33 @@ function notes_complete_command_export()
 {
     if [ "$#" == 0 ]
     then
+        echo "html";
+        echo "txt";
+
+    else if [ "$#" == 1 ]
+    then
         local notes_files=$(find -type f -iname [0-9].txt | sort -n )
         for file in ${notes_files[@]}
         do
             local id=$(basename $file ".txt")
             echo "${id}"
         done
-    else
-        # list files in work dir
-        pushd ${WORK_DIR} > /dev/null
-        find  -maxdepth 1  -iname "*.html"
+    elif [ "$#" == 2 ]
+    then
+        if [ "${1}" == "html" ]
+        then
+            # list files in work dir
+            pushd ${WORK_DIR} > /dev/null
+            find  -maxdepth 1  -iname "*.html"
+            popd > /dev/null
+        elif [ "${1}" == "txt" ]
+        then
+            # list files in work dir
+            pushd ${WORK_DIR} > /dev/null
+            find  -maxdepth 1  -iname "*.txt"
+            popd > /dev/null
+        fi
+    fi
     fi
     popd > /dev/null
     exit 0;
@@ -199,23 +216,41 @@ function notes_main_run_delete()
 function notes_main_run_export()
 {
     local notes_file;
-    notes_get_from_id "$1" notes_file
-    if [ -z "$1" ]
+
+    ##
+    # Get input
+    ##
+    notes_get_from_id "$2" notes_file
+    if [ -z "$2" ]
     then
         note_error "Usage: export <id> <filename>"
         exit 1;
     fi
 
-    local filename="$2"
+    ##
+    # Get output
+    ##
+    local filename="$3"
     if [ -z "$filename" ]
     then
         note_error "Usage: export <id> <filename>"
         exit 1;
     fi
 
-    pushd "${WORK_DIR}"
-    __notes_view_generate_html "${NOTE_DIR}/${notes_file}" "${filename}"
-    popd
+    ##
+    # Check style of conversion.
+    ##
+    if [ "$1" == "html" ]
+    then
+        pushd "${WORK_DIR}"
+        __notes_view_generate_html "${NOTE_DIR}/${notes_file}" "${filename}"
+        popd
+    elif [ "$1" == "txt" ]
+    then
+        pushd "${WORK_DIR}"
+        cp "${NOTE_DIR}/${notes_file}" "${filename}"
+        popd
+    fi
 }
 
 function notes_main_run_clean()
