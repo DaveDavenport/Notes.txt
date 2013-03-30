@@ -32,6 +32,41 @@
 # List of colors.
 . ${INCLUDE_DIR}/notes_colors.inc
 
+
+# @param 1 the input array
+# @param 2 the output array
+function __sort_notes_ids()
+{
+    local __result=$2
+    local __ARRAY=( ${1} )
+    declare -i count=${#__ARRAY[@]}
+    declare -i last=0;
+
+    for (( last=count-1;last>0;last--))
+    do
+        for((i=0;i<last;i++))
+        do
+          j=$((i+1))
+
+          local val_a;
+          local val_b;
+
+          val_a=$(basename "${__ARRAY[i]}" ".txt")
+          val_b=$(basename "${__ARRAY[j]}" ".txt")
+
+          if [ "$val_a" -gt "$val_b" ] 
+          then
+            # Swap elements around.
+            temp="${__ARRAY[i]}"
+            __ARRAY[i]="${__ARRAY[j]}"
+            __ARRAY[j]="${temp}"
+          fi
+        done
+    done
+    eval $__result="'${__ARRAY[@]}'" 
+}
+
+
 ##
 # Print
 ##
@@ -238,7 +273,10 @@ function __notes_category_name()
 ################
 function notes_list()
 {
-    local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n )
+    local NOTES_FILES=$(find -type f -iname [0-9].txt)
+
+    __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES
+
     # Get max category length
     declare -i max_cat_length=7;
     declare -i id_length=2;
