@@ -37,9 +37,9 @@
 # @param 2 the output array
 function __sort_notes_ids()
 {
-    local __result=$2
-    local __ARRAY=( ${1} )
-    declare -i count=${#__ARRAY[@]}
+    local __sort_result=$2
+    local __sort_ARRAY=( ${1} )
+    declare -i count=${#__sort_ARRAY[@]}
     declare -i last=0;
 
     for (( last=count-1;last>0;last--))
@@ -51,19 +51,19 @@ function __sort_notes_ids()
           local val_a;
           local val_b;
 
-          val_a=$(basename "${__ARRAY[i]}" ".txt")
-          val_b=$(basename "${__ARRAY[j]}" ".txt")
+          val_a=$(basename "${__sort_ARRAY[i]}" ".txt")
+          val_b=$(basename "${__sort_ARRAY[j]}" ".txt")
 
           if [ "$val_a" -gt "$val_b" ] 
           then
             # Swap elements around.
-            temp="${__ARRAY[i]}"
-            __ARRAY[i]="${__ARRAY[j]}"
-            __ARRAY[j]="${temp}"
+            temp="${__sort_ARRAY[i]}"
+            __sort_ARRAY[i]="${__sort_ARRAY[j]}"
+            __sort_ARRAY[j]="${temp}"
           fi
         done
     done
-    eval $__result="'${__ARRAY[@]}'" 
+    eval $__sort_result="'${__sort_ARRAY[@]}'"
 }
 
 
@@ -251,6 +251,25 @@ function notes_get_from_id()
     note_file=$(find -type f -iname "$1.txt")
     if [ -z "$note_file" ]
     then
+        # Do content based matching
+        local NOTES_FILES=$(find -type f -iname [0-9].txt)
+
+        __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES 
+
+        local __result;
+        __internal_filter_list "${NOTES_FILES[@]}" "$1" __result 
+        declare -i count="${#__result[@]}"
+
+        if [ $count == 1 ]
+        then
+            eval $result="'${__result[0]}'"
+            return; 
+        else
+            notes_error "Found ${#__result[@]} possible matches."
+            __internal_notes_list "${__result[@]}"
+            exit 1;
+        fi
+
         notes_error "Failed to find note: $1"
         exit 1;
     fi
@@ -271,18 +290,53 @@ function __notes_category_name()
 ################
 # List
 ################
-function notes_list()
-{
-    local NOTES_FILES=$(find -type f -iname [0-9].txt)
 
-    __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES
+function __internal_filter_list()
+{
+    local __filtert=$2
+    local __filter_result=$3
+    local __filter_result_array=( )
+    local __ARRAY=( ${1} )
+    declare -i count=0;
+
+    for file in ${__ARRAY[@]}
+    do
+        declare -i id
+        local category;
+        __notes_category_name "$file" category
+        declare -i show=1;
+        if [ -n "$__filtert" ]
+        then
+            show=0;
+            # Check content of file.
+            egrep -q -i -e "$__filtert" "$file" 
+            local in_content=$?
+            if [ $in_content == 0 ] || [[ "${category}" =~ .*"$__filtert".* ]]
+            then
+                show=1;
+            fi
+        fi
+        if [ $show == 1 ]
+        then
+            __filter_result_array[count]="${file}"
+            count+=1;
+        fi
+    done
+
+    eval $__filter_result='( ${__filter_result_array[@]} )'
+}
+
+function __internal_notes_list()
+{
+    local NOTES_FILES=( ${@} )
 
     # Get max category length
     declare -i max_cat_length=7;
     declare -i id_length=2;
     declare -i desc_length=11;
     declare -i date_length=11;
-    for file in $NOTES_FILES
+
+    for file in ${NOTES_FILES[@]}
     do
         local id=$(basename $file ".txt")
         local category;
@@ -310,39 +364,39 @@ function notes_list()
     printf "\n"
 
     # Print hits
-    for file in $NOTES_FILES
+    for file in ${NOTES_FILES[@]}
     do
         declare -i id
         local category;
         __notes_category_name "$file" category
-        declare -i show=1;
-        if [ -n "$1" ]
-        then
-            show=0;
-            # Check content of file.
-            egrep -q -i -e "$1" "$file" 
-            local in_content=$?
-            if [ $in_content == 0 ] || [[ "${category}" =~ .*"$1".* ]]
-            then
-                show=1;
-            fi
-        fi
-        if [ $show == 1 ]
-        then
-            date=""
-            id=$(basename $file ".txt")
-            name=$(notes_get_name "$file")
 
-            notes_get_date "${file}" date 
-            date=$(date -d "${date}" "+${DATE_FORMAT}")
+        local date=""
+        id=$(basename $file ".txt")
+        name=$(notes_get_name "$file")
 
-            format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET}  "
-            format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET}  "
-            format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET}  "
-            format+="%s\n"
-            printf "$format" "$id" "$category" "${date}" "$name"
-        fi
+        notes_get_date "${file}" date 
+        date=$(date -d "${date}" "+${DATE_FORMAT}")
+
+        format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET}  "
+        format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET}  "
+        format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET}  "
+        format+="%s\n"
+        printf "$format" "$id" "$category" "${date}" "$name"
     done
+}
+
+function notes_list()
+{
+    local NOTES_FILES=$(find -type f -iname [0-9].txt)
+
+    # Sort the notes
+    __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES
+
+    # filter list
+    __internal_filter_list "${NOTES_FILES[@]}" "$1" NOTES_FILES
+
+    # show list
+    __internal_notes_list "${NOTES_FILES[@]}"
 }
 
 
