@@ -1,6 +1,6 @@
 Notes.txt: Command-line Notes application
 ========================================
-:Date: Thu Mar 28 20:44:42 CET 2013
+:Date: Sun Mar 31 15:39:13 CEST 2013
 :Author: Qball Cow
 
 notes.txt is a simple command-line note managing application. 
@@ -131,14 +131,26 @@ Commands
 --------------------------
     notes.sh view <id>
 --------------------------
+It is also possible to search:
+[source,bash]
+--------------------------------
+    notes.sh view <search regex>
+---------------------------------
+If multiple items match, it will display a list.
+NOTE: If you view a note that is being edited, the temporary file
+will be build and displayed.
+
  * 'edit': Edit an item
 [source,bash]
 --------------------------
     notes.sh edit <id>
 --------------------------
-
-NOTE: If you do this on a note that is being edited, the temporary file
-will be build and displayed.
+It is also possible to search:
+[source,bash]
+--------------------------------
+    notes.sh edit <search regex>
+---------------------------------
+If multiple items match, it will display a list.
 
  * 'list': List items
 [source,bash]
