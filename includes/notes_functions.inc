@@ -270,11 +270,27 @@ function notes_get_from_id()
         else
             notes_error "Found ${#__result[@]} possible matches."
             __internal_notes_list "${__result[@]}"
+            id="" 
+            while [ -z "$id" ]
+            do
+                notes_print "Please enter note id:"
+                read id;
+                if [ "$id" == "q" ]
+                then
+                    popd > /dev/null
+                    exit 0;
+                fi
+            done
+            note_file=$(find -type f -iname "$id.txt")
+            if [ -n "$note_file" ]
+            then
+                eval $result="'$note_file'"
+                return;
+            else
+                notes_error "Failed to find note with id: $id"
+            fi
             exit 1;
         fi
-
-        notes_error "Failed to find note: $1"
-        exit 1;
     fi
     eval $result="'$note_file'"
 }
