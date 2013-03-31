@@ -55,11 +55,11 @@ then
         nm-tool | grep -e "^[\t ]*Address:.*" | grep -e "192.150." -e "131.155" > /dev/null
         if [ $? == 0 ]
         then
-            HAS_INET=1
+            DO_AUTO_PUSH_PULL=1
         fi
     fi
 else
-    HAS_INET=1
+    DO_AUTO_PUSH_PULL=1
 fi
 
 

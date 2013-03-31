@@ -41,9 +41,11 @@ function __sort_notes_ids()
     local __sort_ARRAY=( ${1} )
     declare -i count=${#__sort_ARRAY[@]}
     declare -i last=0;
+    declare -i changed=1;
 
-    for (( last=count-1;last>0;last--))
+    for (( last=count-1;last>0 && changed > 0;last--))
     do
+        changed=0;
         for((i=0;i<last;i++))
         do
           j=$((i+1))
@@ -60,6 +62,7 @@ function __sort_notes_ids()
             temp="${__sort_ARRAY[i]}"
             __sort_ARRAY[i]="${__sort_ARRAY[j]}"
             __sort_ARRAY[j]="${temp}"
+            changed=1;
           fi
         done
     done
