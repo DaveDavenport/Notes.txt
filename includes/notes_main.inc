@@ -242,14 +242,16 @@ function notes_main_run_export()
     ##
     if [ "$1" == "html" ]
     then
-        pushd "${WORK_DIR}"
+        pushd "${WORK_DIR}" > /dev/null
+        notes_info "Exporting to ${filename}"
         __notes_view_generate_html "${NOTE_DIR}/${notes_file}" "${filename}"
-        popd
+        popd > /dev/null
     elif [ "$1" == "txt" ]
     then
-        pushd "${WORK_DIR}"
+        pushd "${WORK_DIR}" > /dev/null
+        notes_info "Exporting to ${filename}"
         cp "${NOTE_DIR}/${notes_file}" "${filename}"
-        popd
+        popd > /dev/null
     fi
 }
 
