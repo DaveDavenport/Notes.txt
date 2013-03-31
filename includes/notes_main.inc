@@ -26,6 +26,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#@TODO: Make function that list notes id, or categories.
+
 ##############################
 ## Completion Functions     ##
 ##############################
@@ -65,6 +67,31 @@ function notes_complete_command_export()
     popd > /dev/null
     exit 0;
 }
+function notes_complete_command_move()
+{
+    if [ "$#" == 0 ]
+    then
+        local notes_files=$(find -type f -iname [0-9].txt | sort -n )
+        for file in ${notes_files[@]}
+        do
+            local id=$(basename $file ".txt")
+            echo "${id}"
+        done
+    else if [ "$#" == 1 ]
+    then
+        local NOTES_FILES=$(find -type f -iname [0-9].txt | sort -n )
+        for file in ${NOTES_FILES[@]}
+        do
+            local category
+            __notes_category_name "$file" category
+            echo "${category}"
+        done
+    fi
+    fi
+    popd > /dev/null
+    exit 0;
+}
+
 function notes_complete_command_delete()
 {
     local notes_files=$(find -type f -iname [0-9].txt | sort -n )
@@ -269,6 +296,22 @@ function notes_main_run_clean()
             rm -r "${TEMP_DIR}"
         fi
     fi
+}
+
+function notes_main_run_move()
+{
+    local note_id="$1"
+    local new_category="$2"
+    local note_filename;
+    # Get note file
+    notes_get_from_id "$note_id" note_filename;
+    # validate category name.
+    notes_validate_category "$new_category";
+
+    local PROJECT=${new_category//./\/}
+    notes_check_directory "${PROJECT}"
+
+    notes_vcs_move_file "${note_filename}" "./${PROJECT}/${note_id}.txt"
 }
 
 function notes_main_run_commands()

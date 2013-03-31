@@ -434,7 +434,6 @@ function notes_add()
     for file in "${NOTES_FILES[@]}"
     do
         local id=${file/.txt}
-        echo "$new_id-$id"
         if [ $new_id -lt $id ]
         then
             break;

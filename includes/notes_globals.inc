@@ -39,4 +39,5 @@ COMMANDS=(
 "delete"
 "export"
 "clean"
+"move"
 )

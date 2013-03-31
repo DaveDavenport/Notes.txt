@@ -1,6 +1,6 @@
 Notes.txt: Command-line Notes application
 ========================================
-:Date: Sun Mar 31 15:39:13 CEST 2013
+:Date: Sun Mar 31 21:53:26 CEST 2013
 :Author: Qball Cow
 
 notes.txt is a simple command-line note managing application. 
@@ -188,6 +188,12 @@ ID Project      Description
 [source,bash]
 -----------------
     notes.sh clean
+-----------------
+
+ * 'move': Move a note to another project
+[source,bash]
+-----------------
+    notes.sh move <id> <Project>
 -----------------
 
 Download

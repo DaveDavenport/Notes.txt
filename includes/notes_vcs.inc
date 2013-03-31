@@ -138,3 +138,13 @@ function notes_vcs_remove_file()
         exit 1;
     fi
 }
+
+function notes_vcs_move_file()
+{
+    $GIT mv "$1" "$2"
+    if [ $? != 0 ]
+    then
+        notes_error "Failed to move file from repo: $1 to $2"
+        exit 1;
+    fi
+}
