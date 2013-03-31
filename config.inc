@@ -50,7 +50,7 @@ NM_TOOL=$(which nm-online)
 
 if [ -n "${NM_TOOL}" ]
 then
-    if ${NM_TOOL}
+   if ${NM_TOOL} -x
     then
         nm-tool | grep -e "^[\t ]*Address:.*" | grep -e "192.150." -e "131.155" > /dev/null
         if [ $? == 0 ]
