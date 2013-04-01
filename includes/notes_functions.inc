@@ -255,7 +255,7 @@ function notes_get_from_id()
     if [ -z "$note_file" ]
     then
         # Do content based matching
-        local NOTES_FILES=$(find -type f -iname [0-9].txt)
+        local NOTES_FILES=$(find -type f -iname [0-9]*.txt)
 
         __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES 
 
@@ -406,7 +406,7 @@ function __internal_notes_list()
 
 function notes_list()
 {
-    local NOTES_FILES=$(find -type f -iname [0-9].txt)
+    local NOTES_FILES=$(find -type f -iname [0-9]*.txt)
 
     # Sort the notes
     __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES
@@ -427,7 +427,7 @@ function notes_add()
     notes_validate_category "${1}"
 
     local PROJECT=${1//./\/}
-    local NOTES_FILES=($(find -type f -iname [0-9].txt -printf "%f\n" | sort -n))
+    local NOTES_FILES=($(find -type f -iname [0-9]*.txt -printf "%f\n" | sort -n))
    
  
     declare -i new_id=1;
