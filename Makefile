@@ -26,5 +26,5 @@ install: $(INCLUDE_DEST) $(PROGRAM_FILE_DEST) $(CONFIG_DEST)
 
 
 uninstall:
-	rm -f $(INCLUDE_DEST)
+	rm -f $(INCLUDE_DEST) $(PROGRAM_FILE_DEST)
 

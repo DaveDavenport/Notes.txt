@@ -1,6 +1,6 @@
 Notes.txt: Command-line Notes application
 ========================================
-:Date: Tue Apr  2 09:35:31 CEST 2013
+:Date: Tue Apr  2 10:59:19 CEST 2013
 :Author: Qball Cow
 
 notes.txt is a simple command-line note managing application. 
@@ -91,8 +91,11 @@ A good installation would be:
 The first two locations can be configured in the 'config' file. 
 The configuration file should always be in this location.
 
-An included install.sh script (very simple) will link all the files in the right location.
+There is an included makefile that will install notes.sh for you.
 
+-----------
+make install
+-----------
 
 Setting up Notes repository
 ---------------------------
