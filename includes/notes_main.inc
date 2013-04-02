@@ -41,7 +41,8 @@ function notes_complete_command_export()
 
     else if [ "$#" == 1 ]
     then
-        local notes_files=$(find -type f -iname [0-9]*.txt | sort -n )
+        local notes_files;
+        notes_get_list notes_files;
         for file in ${notes_files[@]}
         do
             local id=$(basename $file ".txt")
@@ -71,7 +72,8 @@ function notes_complete_command_move()
 {
     if [ "$#" == 0 ]
     then
-        local notes_files=$(find -type f -iname [0-9]*.txt | sort -n )
+        local notes_files;
+        notes_get_list notes_files;
         for file in ${notes_files[@]}
         do
             local id=$(basename $file ".txt")
@@ -79,7 +81,8 @@ function notes_complete_command_move()
         done
     else if [ "$#" == 1 ]
     then
-        local NOTES_FILES=$(find -type f -iname [0-9]*.txt | sort -n )
+        local NOTES_FILES;
+        notes_get_list NOTES_FILES;
         for file in ${NOTES_FILES[@]}
         do
             local category
@@ -94,7 +97,8 @@ function notes_complete_command_move()
 
 function notes_complete_command_delete()
 {
-    local notes_files=$(find -type f -iname [0-9]*.txt | sort -n )
+    local notes_files;
+    notes_get_list notes_files;
     for file in ${notes_files[@]}
     do
         local id=$(basename $file ".txt")
@@ -106,7 +110,8 @@ function notes_complete_command_delete()
 
 function notes_complete_command_edit()
 {
-    local notes_files=$(find -type f -iname [0-9]*.txt | sort -n )
+    local notes_files;
+    notes_get_list notes_files;
     for file in ${notes_files[@]}
     do
         local id=$(basename $file ".txt")
@@ -118,7 +123,8 @@ function notes_complete_command_edit()
 
 function notes_complete_command_view()
 {
-    local notes_files=$(find -type f -iname [0-9]*.txt | sort -n )
+    local notes_files;
+    notes_get_list notes_files;
     for file in ${notes_files[@]}
     do
         local id=$(basename $file ".txt")
@@ -132,7 +138,8 @@ function notes_complete_command_add()
 {
     if [ $# == 0 ]
     then
-        local NOTES_FILES=$(find -type f -iname [0-9]*.txt | sort -n )
+        local NOTES_FILES;
+        notes_get_list NOTES_FILES;
         for file in ${NOTES_FILES[@]}
         do
             local category
@@ -146,7 +153,8 @@ function notes_complete_command_add()
 
 function notes_complete_command_list()
 {
-    local NOTES_FILES=$(find -type f -iname [0-9]*.txt | sort -n )
+    local NOTES_FILES;
+    notes_get_list NOTES_FILES;
     for file in ${NOTES_FILES[@]}
     do
         local category
