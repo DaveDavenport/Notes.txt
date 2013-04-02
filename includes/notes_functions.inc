@@ -439,10 +439,12 @@ function notes_add()
     local PROJECT=${1//./\/}
     local NOTES_FILES;
     notes_get_list NOTES_FILES;
+    __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES
    
- 
+
+    notes_info "Looking for free id:"
     declare -i new_id=1;
-    for file in "${NOTES_FILES[@]}"
+    for file in ${NOTES_FILES[@]}
     do
         local __bf=$(basename "${file}")
         local id=${__bf/.txt}
@@ -452,6 +454,7 @@ function notes_add()
         fi
         new_id+=1;
     done
+    notes_info "Found id: ${new_id}"
     # Create the filename
     file="./$PROJECT/$new_id.txt"
     local temp_file;
