@@ -444,7 +444,8 @@ function notes_add()
     declare -i new_id=1;
     for file in "${NOTES_FILES[@]}"
     do
-        local id=${file/.txt}
+        local __bf=$(basename "${file}")
+        local id=${__bf/.txt}
         if [ $new_id -lt $id ]
         then
             break;
