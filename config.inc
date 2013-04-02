@@ -71,12 +71,18 @@ DATE_FORMAT="%F"
 # This configures what MARKUP tool to use.
 ##
 
+# give the output format this backend supports.
+MARKUP_OUTPUT_FORMATS=( "html" "docbook" "wordpress" )
+
+# The default view format.
+MARKUP_VIEW_FORMAT="html"
+
 ############################################
 # ASCIIDOC
 ############################################
 
 # The tool to parse input and cat to output.
-MARKUP_PARSER="asciidoc -o -"
+MARKUP_PARSER="asciidoc -o - -b \${backend}"
 
 # This should extract the description string from the input file.
 NOTES_GET_DESCRIPTION="sed 1q"

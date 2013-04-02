@@ -166,9 +166,10 @@ function __notes_view_generate_tmp_html_filename()
 
 # @param 1 The note file
 # @param 2 The temp html file
-function __notes_view_generate_html()
+function __notes_view_generate_view_format()
 {
-    $MARKUP_PARSER "$1" > "$2"
+    local backend="${MARKUP_VIEW_FORMAT}"
+    eval $MARKUP_PARSER "$1" > "$2"
     if [ $? != 0 ]
     then
         notes_error "Failed to create html file"
@@ -184,10 +185,10 @@ function notes_view()
     if [ -f "${temp_file}" ]
     then
         __notes_view_generate_tmp_html_filename "${1}" filename
-        __notes_view_generate_html "${temp_file}" $filename
+        __notes_view_generate_view_format "${temp_file}" $filename
     else
         __notes_view_generate_tmp_html_filename "$1" filename
-        __notes_view_generate_html "$1" $filename
+        __notes_view_generate_view_format "$1" $filename
     fi
     xdg-open $filename
 }

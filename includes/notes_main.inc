@@ -36,9 +36,11 @@ function notes_complete_command_export()
 {
     if [ "$#" == 0 ]
     then
-        echo "html";
-        echo "txt";
-
+        echo "raw"
+        for format in ${MARKUP_OUTPUT_FORMATS[@]}
+        do
+            echo "${format}"
+        done
     else if [ "$#" == 1 ]
     then
         local notes_files;
@@ -50,17 +52,16 @@ function notes_complete_command_export()
         done
     elif [ "$#" == 2 ]
     then
-        if [ "${1}" == "html" ]
-        then
-            # list files in work dir
-            pushd ${WORK_DIR} > /dev/null
-            find  -maxdepth 1  -iname "*.html"
-            popd > /dev/null
-        elif [ "${1}" == "txt" ]
+        if [ "${1}" == "raw" ]
         then
             # list files in work dir
             pushd ${WORK_DIR} > /dev/null
             find  -maxdepth 1  -iname "*.txt"
+            popd > /dev/null
+        else
+            # list files in work dir
+            pushd ${WORK_DIR} > /dev/null
+            find  -maxdepth 1  -iname "*"
             popd > /dev/null
         fi
     fi
@@ -275,17 +276,22 @@ function notes_main_run_export()
     ##
     # Check style of conversion.
     ##
-    if [ "$1" == "html" ]
-    then
-        pushd "${WORK_DIR}" > /dev/null
-        notes_info "Exporting to ${filename}"
-        __notes_view_generate_html "${NOTE_DIR}/${notes_file}" "${filename}"
-        popd > /dev/null
-    elif [ "$1" == "txt" ]
+    if [ "$1" == "raw" ]
     then
         pushd "${WORK_DIR}" > /dev/null
         notes_info "Exporting to ${filename}"
         cp "${NOTE_DIR}/${notes_file}" "${filename}"
+        popd > /dev/null
+    else
+        pushd "${WORK_DIR}" > /dev/null
+        notes_info "Exporting to ${filename}"
+        local backend="$1"
+        eval $MARKUP_PARSER "${NOTE_DIR}/${notes_file}" > "${filename}"
+        if [ $? != 0 ]
+        then
+            notes_error "Failed to create $1 file"
+            exit 1;
+        fi
         popd > /dev/null
     fi
 }
