@@ -168,7 +168,7 @@ function __notes_view_generate_tmp_html_filename()
 # @param 2 The temp html file
 function __notes_view_generate_view_format()
 {
-    local backend="${MARKUP_VIEW_FORMAT}"
+    local output_format="${MARKUP_VIEW_FORMAT}"
     eval $MARKUP_PARSER "$1" > "$2"
     if [ $? != 0 ]
     then

@@ -1,6 +1,6 @@
 Notes.txt: Command-line Notes application
 ========================================
-:Date: Sun Mar 31 21:53:26 CEST 2013
+:Date: Tue Apr  2 09:35:31 CEST 2013
 :Author: Qball Cow
 
 notes.txt is a simple command-line note managing application. 
@@ -170,8 +170,12 @@ ID Project      Description
  * 'export': Export an item
 [source,bash]
 --------------------------
-    notes.sh export <id> <html file>
+    notes.sh export <id> <format> <file>
 --------------------------
+What format is supported depends on the backend. 'Asciidoc' support html,
+docbook, wordpress and more. You can specify additional backends in the config file.
+The 'raw' format is special, and copies the input format.
+
  * 'push': Push local changes to remote git 
 [source,bash]
 -----------------

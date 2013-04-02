@@ -82,7 +82,7 @@ MARKUP_VIEW_FORMAT="html"
 ############################################
 
 # The tool to parse input and cat to output.
-MARKUP_PARSER="asciidoc -o - -b \${backend}"
+MARKUP_PARSER="asciidoc -o - -b \${output_format}"
 
 # This should extract the description string from the input file.
 NOTES_GET_DESCRIPTION="sed 1q"

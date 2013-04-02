@@ -285,7 +285,7 @@ function notes_main_run_export()
     else
         pushd "${WORK_DIR}" > /dev/null
         notes_info "Exporting to ${filename}"
-        local backend="$1"
+        local output_format="$1"
         eval $MARKUP_PARSER "${NOTE_DIR}/${notes_file}" > "${filename}"
         if [ $? != 0 ]
         then
