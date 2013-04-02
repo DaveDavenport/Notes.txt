@@ -28,7 +28,8 @@
 
 
 # Location of the include files.
-PROGRAM_DIR=~/.local/share/notes/
+PREFIX=~/.local/
+PROGRAM_DIR=${PREFIX}/share/notes/
 INCLUDE_DIR=${PROGRAM_DIR}/includes/
 
 # Location of the notes.
