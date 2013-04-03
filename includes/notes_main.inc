@@ -229,8 +229,6 @@ function notes_main_run_list()
 {
     notes_info "Listing notes:"
     notes_list "$@";
-    popd > /dev/null
-    exit 0;
 }
 
 function notes_main_run_edit()
