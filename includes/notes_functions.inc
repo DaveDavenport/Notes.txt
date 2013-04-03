@@ -36,46 +36,10 @@
 function notes_get_list()
 {
     local __gl_result=$1
-    local __gl_nl=$(find -type f -iname [0-9]*.txt)
+    # Sorting result directly using awk and sort.
+    local __gl_nl=$(find -type f -iname [0-9]*txt | awk -F/ '{print $NF"|"$0}' | sort -n | cut -d"|" -f2)
     eval $__gl_result="'${__gl_nl}'"
 }
-
-# @param 1 the input array
-# @param 2 the output array
-function __sort_notes_ids()
-{
-    local __sort_result=$2
-    local __sort_ARRAY=( ${1} )
-    declare -i count=${#__sort_ARRAY[@]}
-    declare -i last=0;
-    declare -i changed=1;
-
-    for (( last=count-1;last>0 && changed > 0;last--))
-    do
-        changed=0;
-        for((i=0;i<last;i++))
-        do
-          j=$((i+1))
-
-          local val_a;
-          local val_b;
-
-          val_a=$(basename "${__sort_ARRAY[i]}" ".txt")
-          val_b=$(basename "${__sort_ARRAY[j]}" ".txt")
-
-          if [ "$val_a" -gt "$val_b" ] 
-          then
-            # Swap elements around.
-            temp="${__sort_ARRAY[i]}"
-            __sort_ARRAY[i]="${__sort_ARRAY[j]}"
-            __sort_ARRAY[j]="${temp}"
-            changed=1;
-          fi
-        done
-    done
-    eval $__sort_result="'${__sort_ARRAY[@]}'"
-}
-
 
 ##
 # Print
@@ -266,8 +230,6 @@ function notes_get_from_id()
         local NOTES_FILES;
         notes_get_list NOTES_FILES;
 
-        __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES 
-
         local __result;
         __internal_filter_list "${NOTES_FILES[@]}" "$1" __result 
         declare -i count="${#__result[@]}"
@@ -382,7 +344,6 @@ function __internal_notes_list()
         length=${#id}
         if [ $length -gt $date_length ]; then date_length=$length; fi
     done
-
     # Generate header
     printf "\n"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET}  " "ID" 
@@ -418,9 +379,6 @@ function notes_list()
     local NOTES_FILES;
     notes_get_list NOTES_FILES;
 
-    # Sort the notes
-    __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES
-
     # filter list
     __internal_filter_list "${NOTES_FILES[@]}" "$1" NOTES_FILES
 
@@ -439,7 +397,6 @@ function notes_add()
     local PROJECT=${1//./\/}
     local NOTES_FILES;
     notes_get_list NOTES_FILES;
-    __sort_notes_ids "${NOTES_FILES[@]}" NOTES_FILES
    
 
     notes_info "Looking for free id:"
