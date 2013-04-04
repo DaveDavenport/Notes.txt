@@ -26,11 +26,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Include the VCS stuff
-. ${INCLUDE_DIR}/notes_vcs.inc
-
-# List of colors.
-. ${INCLUDE_DIR}/notes_colors.inc
 
 # @param 1 output note_list
 function notes_get_list()
@@ -79,8 +74,9 @@ function notes_validate_category()
 
 function notes_get_name()
 {
+    local __ngn_result=$2;
     HEADING=$(${NOTES_GET_DESCRIPTION} "$1")
-    echo ${HEADING}
+    eval $__ngn_result="'${HEADING}'"
 }
 
 
@@ -326,24 +322,41 @@ function __internal_notes_list()
     declare -i desc_length=11;
     declare -i date_length=11;
 
+    # Keep data from first run around. 
+    # this saves the time of fetching it again.
+    declare -a __dates;
+    declare -a __names;
+    declare -a __categories;
+
+    # This function is the slowest.
+    # Optimizing this would be good.
     for file in ${NOTES_FILES[@]}
     do
         local id=$(basename $file ".txt")
+        length=${#id}
+        if [ $length -gt $id_length ]; then id_length=$length; fi
+
         local category;
         __notes_category_name "$file" category
         local length=${#category}
         if [ $length -gt $max_cat_length ]; then max_cat_length=$((length)); fi
-        length=${#id}
-        if [ $length -gt $id_length ]; then id_length=$length; fi
-        name=$(notes_get_name "$file")
+        __categories[$id]="${category}"
+
+        local name
+        notes_get_name "$file" name
         length=${#name}
         if [ $length -gt $desc_length ]; then desc_length=$length; fi
+        __names[$id]="$name"
 
-        notes_get_date "${file}" id
-        id=$(date -d "${id}" "+${DATE_FORMAT}")
-        length=${#id}
+        local mdate;
+        notes_get_date "${file}" mdate
+        mdate=$(date -d "${mdate}" "+${DATE_FORMAT}")
+        length=${#mdate}
         if [ $length -gt $date_length ]; then date_length=$length; fi
+        __dates[$id]="$mdate"
     done
+
+    notes_timestamp "__internal_notes_list(): Calculate lengths"
     # Generate header
     printf "\n"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET}  " "ID" 
@@ -352,26 +365,22 @@ function __internal_notes_list()
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET}  "  "Description"
     printf "\n"
 
+    notes_timestamp "__internal_notes_list(): Headers"
     # Print hits
     for file in ${NOTES_FILES[@]}
     do
         declare -i id
-        local category;
-        __notes_category_name "$file" category
 
         local date=""
         id=$(basename $file ".txt")
-        name=$(notes_get_name "$file")
-
-        notes_get_date "${file}" date 
-        date=$(date -d "${date}" "+${DATE_FORMAT}")
 
         format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET}  "
         format+="%s\n"
-        printf "$format" "$id" "$category" "${date}" "$name"
+        printf "$format" "$id" "${__categories[$id]}" "${__dates[$id]}" "${__names[$id]}"
     done
+    notes_timestamp "__internal_notes_list(): Show rows"
 }
 
 function notes_list()
@@ -379,11 +388,14 @@ function notes_list()
     local NOTES_FILES;
     notes_get_list NOTES_FILES;
 
+    notes_timestamp "notes_list(): Get list"
     # filter list
     __internal_filter_list "${NOTES_FILES[@]}" "$1" NOTES_FILES
+    notes_timestamp "notes_list(): Filter list"
 
     # show list
     __internal_notes_list "${NOTES_FILES[@]}"
+    notes_timestamp "notes_list(): Show list"
 }
 
 
@@ -445,7 +457,9 @@ function notes_add()
 ################
 function notes_delete()
 {
-    notes_get_name $1
+    local name;
+    notes_get_name $1 name
+    notes_print "${name}"
     notes_print "Are you sure you want to delete this note:"
     echo -n "(y/n): "
     local answer="n"

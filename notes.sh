@@ -56,13 +56,19 @@ then
 fi
 
 # load include files
+notes_check_file "${INCLUDE_DIR}/notes_colors.inc"
+notes_check_file "${INCLUDE_DIR}/notes_debug.inc"
 notes_check_file "${INCLUDE_DIR}/notes_globals.inc"
 notes_check_file "${INCLUDE_DIR}/notes_functions.inc"
 notes_check_file "${INCLUDE_DIR}/notes_main.inc"
+notes_check_file "${INCLUDE_DIR}/notes_vcs.inc"
 
+source ${INCLUDE_DIR}/notes_colors.inc
+source ${INCLUDE_DIR}/notes_debug.inc
 source ${INCLUDE_DIR}/notes_globals.inc
 source ${INCLUDE_DIR}/notes_functions.inc
 source ${INCLUDE_DIR}/notes_main.inc
+source ${INCLUDE_DIR}/notes_vcs.inc
 
 # validate the config
 notes_validate_config
@@ -80,20 +86,25 @@ then
     exit 0;
 fi
 
+notes_timestamp "Start"
 # check vcs directory
 notes_vcs_validate_dir "${NOTE_DIR}"
 
+notes_timestamp "VCS validate"
 # Check temp directory.
 notes_check_directory "$TEMP_DIR"
 
+notes_timestamp "Check Directory"
 # When online, check updates
 if [ "${HAS_INET}" == 1 ]
 then
     notes_info "Check for updates"
     notes_vcs_check_updates;
+    notes_timestamp "Check Updates"
 fi
 
 notes_main_run_commands "${@}"
+notes_timestamp "Run command"
 
 # commit results, this function checks if anything changed.
 notes_vcs_commit_changes
@@ -103,7 +114,9 @@ if [ "${HAS_INET}" == 1 ]
 then
     notes_info "Pushing changes"
     notes_vcs_push_changes;
+    notes_timestamp "Push Changes"
 fi
 
 # return.
 popd > /dev/null # ${NOTE_DIR} 
+notes_timestamp "End"
