@@ -332,22 +332,26 @@ function __internal_notes_list()
     # Optimizing this would be good.
     for file in ${NOTES_FILES[@]}
     do
+        # ID.
         local id=$(basename $file ".txt")
         length=${#id}
         if [ $length -gt $id_length ]; then id_length=$length; fi
 
+        # Category
         local category;
         __notes_category_name "$file" category
         local length=${#category}
         if [ $length -gt $max_cat_length ]; then max_cat_length=$((length)); fi
         __categories[$id]="${category}"
 
+        # Name
         local name
         notes_get_name "$file" name
         length=${#name}
         if [ $length -gt $desc_length ]; then desc_length=$length; fi
         __names[$id]="$name"
 
+        # Date
         local mdate;
         notes_get_date "${file}" mdate
         mdate=$(date -d "${mdate}" "+${DATE_FORMAT}")
