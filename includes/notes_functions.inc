@@ -378,7 +378,7 @@ function __internal_notes_list()
         local date=""
         id=$(basename $file ".txt")
 
-        format="${NOTE_COLOR_YELLOW_BOLD}%-${id_length}s${NOTE_RESET}  "
+        format="${NOTE_COLOR_YELLOW_BOLD}%${id_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET}  "
         format+="%s\n"
