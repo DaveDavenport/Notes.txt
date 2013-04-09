@@ -408,7 +408,7 @@ function __internal_notes_list()
         id=$(basename $file ".txt")
 
         format="${NOTE_COLOR_YELLOW_BOLD}%${id_length}s${NOTE_RESET}  "
-        format+="${NOTE_COLOR_BLUE_BOLD}%${revision_length}s${NOTE_RESET}  "
+        format+="${NOTE_COLOR_BLUE}%${revision_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET}  "
         format+="%s\n"
@@ -424,6 +424,10 @@ function notes_list()
 
     notes_timestamp "notes_list(): Get list"
     # filter list
+    if [ -n "$1" ]
+    then
+        notes_print "${NOTE_COLOR_BLUE}Filtered by:${NOTE_RESET}  $1"
+    fi
     __internal_filter_list "${NOTES_FILES[@]}" "$1" NOTES_FILES
     notes_timestamp "notes_list(): Filter list"
 
