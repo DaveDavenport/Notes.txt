@@ -72,6 +72,15 @@ function notes_validate_category()
     fi
 }
 
+function notes_get_revision()
+{
+    local note_file=$1;
+    local __ngr_result=$2;
+    REVISION=$(eval ${NOTES_GET_REVISION})
+
+    eval $__ngr_result="'${REVISION}'"
+}
+
 function notes_get_name()
 {
     local __ngn_result=$2;
@@ -188,6 +197,15 @@ function notes_edit()
     # Update the edit part in header.
     TIMESTAMP="$(date)  (Editing..)"
     eval ${NOTES_MODIFY_DATE} 
+
+    # Update revision number.
+    declare -i cur_rev=1;
+    # Get the current revision.
+    notes_get_revision "$1" cur_rev;
+    # Calculate next revision
+    declare -i next_rev=${cur_rev}+1;
+    # Update.
+    eval ${NOTES_ADD_REVISION}
 
     # Take a checksum of the file before editing.
     MD5SUM_BEFORE=$(md5sum "$file")
@@ -322,11 +340,14 @@ function __internal_notes_list()
     declare -i desc_length=11;
     declare -i date_length=11;
 
+    declare -i revision_length=4;
+
     # Keep data from first run around. 
     # this saves the time of fetching it again.
     declare -a __dates;
     declare -a __names;
     declare -a __categories;
+    declare -a __revisions;
 
     # This function is the slowest.
     # Optimizing this would be good.
@@ -358,12 +379,20 @@ function __internal_notes_list()
         length=${#mdate}
         if [ $length -gt $date_length ]; then date_length=$length; fi
         __dates[$id]="$mdate"
+
+        # Revision
+        local nrev;
+        notes_get_revision "${file}" nrev
+        length=${#nrev}
+        if [ $length -gt $revision_length ]; then revision_length=$length; fi
+        __revisions[$id]="$nrev"
     done
 
     notes_timestamp "__internal_notes_list(): Calculate lengths"
     # Generate header
     printf "\n"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET}  " "ID" 
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${revision_length}s${NOTE_RESET}  "  "Rev."
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET}  " "Project"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${date_length}s${NOTE_RESET}  "  "Last edited"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET}  "  "Description"
@@ -379,10 +408,11 @@ function __internal_notes_list()
         id=$(basename $file ".txt")
 
         format="${NOTE_COLOR_YELLOW_BOLD}%${id_length}s${NOTE_RESET}  "
+        format+="${NOTE_COLOR_BLUE_BOLD}%${revision_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_WHITE_BOLD}%-${max_cat_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_GREEN_BOLD}%-${date_length}s${NOTE_RESET}  "
         format+="%s\n"
-        printf "$format" "$id" "${__categories[$id]}" "${__dates[$id]}" "${__names[$id]}"
+        printf "$format" "$id" "${__revisions[$id]}" "${__categories[$id]}" "${__dates[$id]}" "${__names[$id]}"
     done
     notes_timestamp "__internal_notes_list(): Show rows"
 }
