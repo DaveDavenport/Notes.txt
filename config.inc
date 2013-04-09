@@ -79,10 +79,13 @@ NOTES_GET_DESCRIPTION="sed 1q"
 NOTES_MODIFY_DATE="sed -i \"s|:Date:.*|:Date: \${TIMESTAMP}|g\" \"\$file\" "
 
 # A templete (empty) markup file.
-NOTES_TEMPLATE="{My Title}\n==============\n:Date: $(date)\n:Author: My name\n\ntext"
+NOTES_TEMPLATE="{My Title}\n==============\n:Date: $(date)\n:Author: My name\n:Revision: 1.0, Initial note\n\ntext"
 
 # Get the file from a note file. Input file is '${note_file}'
 NOTES_GET_DATE="sed -n \"s|:Date: \(.*\)\$|\1|p\" \"\${note_file}\""
+
+NOTES_GET_REVISION="sed -n \"s/:Revision: \([0-9.]*\).*/\1/p\" \"\${note_file}\" | sort -n -r | head -n 1"
+NOTES_ADD_REVISION="sed \"/:Revision: \${cur_rev}/a:Revision: \${next_rev}, Reason of update\" \"\${note_file\}\""
 
 ################################################
 # Markup
