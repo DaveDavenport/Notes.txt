@@ -40,4 +40,5 @@ COMMANDS=(
 "export"
 "clean"
 "move"
+"convert"
 )

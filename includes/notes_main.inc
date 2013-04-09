@@ -30,6 +30,28 @@
 ## Completion Functions     ##
 ##############################
 
+
+function notes_complete_command_convert()
+{
+    if [ "$#" == 0 ]
+    then
+        for format in ${CONVERT_FORMATS[@]}
+        do
+            echo "${format}"
+        done
+    elif [ "$#" == 1 ]
+    then
+        local notes_files;
+        notes_get_list notes_files;
+        for file in ${notes_files[@]}
+        do
+            local id=$(basename $file ".txt")
+            echo "${id}"
+        done
+    fi
+    popd > /dev/null
+    exit 0;
+}
 function notes_complete_command_export()
 {
     if [ "$#" == 0 ]
@@ -245,6 +267,31 @@ function notes_main_run_delete()
     notes_delete "$note"
 }
 
+function notes_main_run_convert()
+{
+    local note_file;
+
+    ##
+    # Get input
+    ##
+    notes_get_from_id "$2" note_file
+    if [ -z "${note_file}" ]
+    then
+        notes_error "Usage: convert <format> <id>"
+        exit 1;
+    fi
+
+    notes_info "Exporting ${note_file}"
+    local convert_format="$1"
+
+    echo ${CONVERT_COMMAND}
+    eval ${CONVERT_COMMAND} 
+    if [ $? != 0 ]
+    then
+        notes_error "Failed to create $1 file"
+        exit 1;
+    fi
+}
 function notes_main_run_export()
 {
     local notes_file;

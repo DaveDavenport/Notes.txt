@@ -64,6 +64,12 @@ MARKUP_OUTPUT_FORMATS=( "html" "docbook" "wordpress" )
 # The default view format.
 MARKUP_VIEW_FORMAT="html"
 
+
+# Advanced Export (convert). (a2x)
+CONVERT_FORMATS=("chunked" "epub" "htmlhelp" "manpage" "pdf" "text" "xhtml" "dvi" "ps" "tex" "docbook")
+
+CONVERT_COMMAND="a2x -f \${convert_format} -D \${WORK_DIR} \${note_file}"
+
 ############################################
 # ASCIIDOC
 ############################################

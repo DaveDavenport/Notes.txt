@@ -235,10 +235,10 @@ function notes_edit()
 #@param 2 output of filename
 function notes_get_from_id()
 {
-    local note_file
+    local __ngfi_note_file
     local result=$2;
-    note_file=$(find -type f -iname "$1.txt")
-    if [ -z "$note_file" ]
+    __ngfi_note_file=$(find -type f -iname "$1.txt")
+    if [ -z "$__ngfi_note_file" ]
     then
         # Do content based matching
         local NOTES_FILES;
@@ -266,10 +266,10 @@ function notes_get_from_id()
                     exit 0;
                 fi
             done
-            note_file=$(find -type f -iname "$id.txt")
-            if [ -n "$note_file" ]
+            __ngfi_note_file=$(find -type f -iname "$id.txt")
+            if [ -n "$__ngfi_note_file" ]
             then
-                eval $result="'$note_file'"
+                eval $result="'$__ngfi_note_file'"
                 return;
             else
                 notes_error "Failed to find note with id: $id"
@@ -277,7 +277,7 @@ function notes_get_from_id()
             exit 1;
         fi
     fi
-    eval $result="'$note_file'"
+    eval $result="'$__ngfi_note_file'"
 }
 
 
