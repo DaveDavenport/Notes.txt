@@ -340,7 +340,7 @@ function __internal_notes_list()
     declare -i desc_length=11;
     declare -i date_length=11;
 
-    declare -i revision_length=4;
+    declare -i revision_length=3;
 
     # Keep data from first run around. 
     # this saves the time of fetching it again.
@@ -392,7 +392,7 @@ function __internal_notes_list()
     # Generate header
     printf "\n"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${id_length}s${NOTE_RESET}  " "ID" 
-    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${revision_length}s${NOTE_RESET}  "  "Rev."
+    printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${revision_length}s${NOTE_RESET}  "  "Rev"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${max_cat_length}s${NOTE_RESET}  " "Project"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${date_length}s${NOTE_RESET}  "  "Last edited"
     printf "${NOTE_BOLD}${NOTE_UNDERLINE}%-${desc_length}s${NOTE_RESET}  "  "Description"
