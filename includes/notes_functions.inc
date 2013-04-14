@@ -331,7 +331,6 @@ function __internal_filter_list()
             GLOBAL_NUM_NOTES=${GLOBAL_NUM_NOTES}-1;
         fi
     done
-    echo ${GLOBAL_NUM_NOTES}
 }
 
 function __internal_notes_list()
