@@ -42,3 +42,8 @@ COMMANDS=(
 "move"
 "convert"
 )
+
+#global list of all notes..
+#Strucutre is [id]->value
+declare -a GLOBAL_NOTES_LIST;
+declare -i GLOBAL_NUM_NOTES=0;

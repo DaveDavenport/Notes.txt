@@ -41,13 +41,7 @@ function notes_complete_command_convert()
         done
     elif [ "$#" == 1 ]
     then
-        local notes_files;
-        notes_get_list notes_files;
-        for file in ${notes_files[@]}
-        do
-            local id=$(basename $file ".txt")
-            echo "${id}"
-        done
+        echo "${!GLOBAL_NOTES_LIST[@]}"
     fi
     popd > /dev/null
     exit 0;
@@ -63,13 +57,7 @@ function notes_complete_command_export()
         done
     else if [ "$#" == 1 ]
     then
-        local notes_files;
-        notes_get_list notes_files;
-        for file in ${notes_files[@]}
-        do
-            local id=$(basename $file ".txt")
-            echo "${id}"
-        done
+        echo "${!GLOBAL_NOTES_LIST[@]}"
     elif [ "$#" == 2 ]
     then
         if [ "${1}" == "raw" ]
@@ -93,19 +81,12 @@ function notes_complete_command_move()
 {
     if [ "$#" == 0 ]
     then
-        local notes_files;
-        notes_get_list notes_files;
-        for file in ${notes_files[@]}
-        do
-            local id=$(basename $file ".txt")
-            echo "${id}"
-        done
+        echo "${!GLOBAL_NOTES_LIST[@]}"
     else if [ "$#" == 1 ]
     then
-        local NOTES_FILES;
-        notes_get_list NOTES_FILES;
-        for file in ${NOTES_FILES[@]}
+        for index in ${!GLOBAL_NOTES_LIST[@]} 
         do
+            local file=${GLOBAL_NOTES_LIST[index]}
             local category
             __notes_category_name "$file" category
             echo "${category}"
@@ -118,39 +99,21 @@ function notes_complete_command_move()
 
 function notes_complete_command_delete()
 {
-    local notes_files;
-    notes_get_list notes_files;
-    for file in ${notes_files[@]}
-    do
-        local id=$(basename $file ".txt")
-        echo "${id}"
-    done
+    echo "${!GLOBAL_NOTES_LIST[@]}"
     popd > /dev/null
     exit 0;
 }
 
 function notes_complete_command_edit()
 {
-    local notes_files;
-    notes_get_list notes_files;
-    for file in ${notes_files[@]}
-    do
-        local id=$(basename $file ".txt")
-        echo "${id}"
-    done
+    echo "${!GLOBAL_NOTES_LIST[@]}"
     popd > /dev/null
     exit 0;
 }
 
 function notes_complete_command_view()
 {
-    local notes_files;
-    notes_get_list notes_files;
-    for file in ${notes_files[@]}
-    do
-        local id=$(basename $file ".txt")
-        echo "${id}"
-    done
+    echo "${!GLOBAL_NOTES_LIST[@]}"
     popd > /dev/null
     exit 0;
 }
@@ -159,10 +122,9 @@ function notes_complete_command_add()
 {
     if [ $# == 0 ]
     then
-        local NOTES_FILES;
-        notes_get_list NOTES_FILES;
-        for file in ${NOTES_FILES[@]}
+        for index in ${!GLOBAL_NOTES_LIST[@]} 
         do
+            local file=${GLOBAL_NOTES_LIST[index]}
             local category
             __notes_category_name "$file" category
             echo "${category}"
@@ -174,10 +136,9 @@ function notes_complete_command_add()
 
 function notes_complete_command_list()
 {
-    local NOTES_FILES;
-    notes_get_list NOTES_FILES;
-    for file in ${NOTES_FILES[@]}
+    for index in ${!GLOBAL_NOTES_LIST[@]} 
     do
+        local file=${GLOBAL_NOTES_LIST[index]}
         local category
         __notes_category_name "$file" category
         echo "${category}"

@@ -76,6 +76,9 @@ notes_validate_config
 # go to the Notes directory.
 pushd "${NOTE_DIR}" > /dev/null
 
+# Load global list.
+notes_global_load_list;
+
 # Handle autocomplete
 if [ "$1" == "--complete" ]
 then
@@ -87,6 +90,9 @@ then
 fi
 
 notes_timestamp "Start"
+
+notes_timestamp "load list"
+
 # check vcs directory
 notes_vcs_validate_dir "${NOTE_DIR}"
 

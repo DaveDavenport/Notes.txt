@@ -26,14 +26,21 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-# @param 1 output note_list
-function notes_get_list()
+##
+# Load notes into global list.
+##
+function notes_global_load_list()
 {
-    local __gl_result=$1
-    # Sorting result directly using awk and sort.
+    declare -i index=1; 
     local __gl_nl=$(find -type f -iname [0-9]*txt | awk -F/ '{print $NF"|"$0}' | sort -n | cut -d"|" -f2)
-    eval $__gl_result="'${__gl_nl}'"
+
+    for file in ${__gl_nl}
+    do
+        GLOBAL_NOTES_LIST[$index]="${file}"
+        index+=1;
+        GLOBAL_NUM_NOTES+=1;
+    done
+
 }
 
 ##
@@ -237,20 +244,20 @@ function notes_get_from_id()
 {
     local __ngfi_note_file
     local result=$2;
-    __ngfi_note_file=$(find -type f -iname "$1.txt")
+    if [[ $1 =~ ^[0-9]+$ ]]
+    then
+        __ngfi_note_file=${GLOBAL_NOTES_LIST["$1"]}
+    fi
     if [ -z "$__ngfi_note_file" ]
     then
         # Do content based matching
-        local NOTES_FILES;
-        notes_get_list NOTES_FILES;
-
         local __result;
-        __internal_filter_list "${NOTES_FILES[@]}" "$1" __result 
-        declare -i count="${#__result[@]}"
+        __internal_filter_list "$1";
+        declare -i count=${GLOBAL_NUM_NOTES}
 
         if [ $count == 1 ]
         then
-            eval $result="'${__result[0]}'"
+            eval $result="'${GLOBAL_NOTES_LIST[@]}'"
             return; 
         else
             notes_error "Found ${#__result[@]} possible matches."
@@ -297,16 +304,14 @@ function __notes_category_name()
 
 function __internal_filter_list()
 {
-    local __filtert=$2
-    local __filter_result=$3
-    local __filter_result_array=( )
-    local __ARRAY=( ${1} )
+    local __filtert=$1
     declare -i count=0;
 
-    for file in ${__ARRAY[@]}
+    for index in $(seq 1 ${GLOBAL_NUM_NOTES}) 
     do
         declare -i id
         local category;
+        local file=${GLOBAL_NOTES_LIST[$index]}
         __notes_category_name "$file" category
         declare -i show=1;
         if [ -n "$__filtert" ]
@@ -320,20 +325,17 @@ function __internal_filter_list()
                 show=1;
             fi
         fi
-        if [ $show == 1 ]
+        if [ $show == 0 ]
         then
-            __filter_result_array[count]="${file}"
-            count+=1;
+            unset GLOBAL_NOTES_LIST[$index]
+            GLOBAL_NUM_NOTES=${GLOBAL_NUM_NOTES}-1;
         fi
     done
-
-    eval $__filter_result='( ${__filter_result_array[@]} )'
+    echo ${GLOBAL_NUM_NOTES}
 }
 
 function __internal_notes_list()
 {
-    local NOTES_FILES=( ${@} )
-
     # Get max category length
     declare -i max_cat_length=7;
     declare -i id_length=2;
@@ -351,10 +353,11 @@ function __internal_notes_list()
 
     # This function is the slowest.
     # Optimizing this would be good.
-    for file in ${NOTES_FILES[@]}
+    for index in ${!GLOBAL_NOTES_LIST[@]}
     do
+        local file=${GLOBAL_NOTES_LIST[index]}
         # ID.
-        local id=$(basename $file ".txt")
+        local id=$index;
         length=${#id}
         if [ $length -gt $id_length ]; then id_length=$length; fi
 
@@ -400,12 +403,12 @@ function __internal_notes_list()
 
     notes_timestamp "__internal_notes_list(): Headers"
     # Print hits
-    for file in ${NOTES_FILES[@]}
+    for index in ${!GLOBAL_NOTES_LIST[@]}
     do
-        declare -i id
+        local file=${GLOBAL_NOTES_LIST[index]}
+        declare -i id=$index
 
         local date=""
-        id=$(basename $file ".txt")
 
         format="${NOTE_COLOR_YELLOW_BOLD}%${id_length}s${NOTE_RESET}  "
         format+="${NOTE_COLOR_BLUE}%${revision_length}s${NOTE_RESET}  "
@@ -419,20 +422,17 @@ function __internal_notes_list()
 
 function notes_list()
 {
-    local NOTES_FILES;
-    notes_get_list NOTES_FILES;
-
     notes_timestamp "notes_list(): Get list"
     # filter list
     if [ -n "$1" ]
     then
         notes_print "${NOTE_COLOR_BLUE}Filtered by:${NOTE_RESET}  $1"
     fi
-    __internal_filter_list "${NOTES_FILES[@]}" "$1" NOTES_FILES
+    __internal_filter_list "$1" 
     notes_timestamp "notes_list(): Filter list"
 
     # show list
-    __internal_notes_list "${NOTES_FILES[@]}"
+    __internal_notes_list;
     notes_timestamp "notes_list(): Show list"
 }
 
@@ -445,22 +445,10 @@ function notes_add()
     notes_validate_category "${1}"
 
     local PROJECT=${1//./\/}
-    local NOTES_FILES;
-    notes_get_list NOTES_FILES;
-   
 
     notes_info "Looking for free id:"
-    declare -i new_id=1;
-    for file in ${NOTES_FILES[@]}
-    do
-        local __bf=$(basename "${file}")
-        local id=${__bf/.txt}
-        if [ $new_id -lt $id ]
-        then
-            break;
-        fi
-        new_id+=1;
-    done
+    declare -i new_id=$(date +%s);
+
     notes_info "Found id: ${new_id}"
     # Create the filename
     file="./$PROJECT/$new_id.txt"
