@@ -362,13 +362,17 @@ function notes_validate_config()
         exit 1;
     fi
     # MARKUP_PARSER
-    if [ -z "$MARKUP_PARSER" ] || [ ! -x $(which $MARKUP_PARSER) ]
+    CMD=$(basename "$MARKUP_PARSER")
+    FN=$(expr match "$CMD" '^\([a-zA-Z0-9]*\)')
+    if [ -z $FN ] || [ ! -x $(which $FN) ]
     then
-        notes_error "Failed to find a valid markup parser: $MARKUP_PARSER"
+        notes_error "Failed to find a valid markup parser: $FN"
         exit 1;
     fi
     # EDITOR
-    if [ -z "$EDITOR" ] || [ ! -x $(which $EDITOR) ]
+    CMD=$(basename "$EDITOR")
+    FN=$(expr match "$CMD" '^\([a-zA-Z0-9]*\)')
+    if [ -z $FN ] || [ ! -x $(which $FN) ]
     then
         notes_error "Failed to find a valid editor: $EDITOR"
         exit 1;
