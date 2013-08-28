@@ -273,7 +273,7 @@ function notes_get_from_id()
                     exit 0;
                 fi
             done
-            __ngfi_note_file=$(find -type f -iname "$id.txt")
+            __ngfi_note_file=${GLOBAL_NOTES_LIST["$id"]};
             if [ -n "$__ngfi_note_file" ]
             then
                 eval $result="'$__ngfi_note_file'"
