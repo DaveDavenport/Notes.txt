@@ -41,9 +41,15 @@ COMMANDS=(
 "clean"
 "move"
 "convert"
+"archive"
 )
 
 #global list of all notes..
 #Strucutre is [id]->value
 declare -a GLOBAL_NOTES_LIST;
 declare -i GLOBAL_NUM_NOTES=0;
+
+declare -a GLOBAL_ARCHIVE_LIST;
+declare -i GLOBAL_NUM_ARCHIVE=0;
+
+ARCHIVE_DIR=".archive/"

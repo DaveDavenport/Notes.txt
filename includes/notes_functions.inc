@@ -32,13 +32,21 @@
 function notes_global_load_list()
 {
     declare -i index=1; 
+    declare -i arch_index=1; 
     local __gl_nl=$(find -type f -iname [0-9]*txt | awk -F/ '{print $NF"|"$0}' | sort -n | cut -d"|" -f2)
 
     for file in ${__gl_nl}
     do
-        GLOBAL_NOTES_LIST[$index]="${file}"
-        index+=1;
-        GLOBAL_NUM_NOTES+=1;
+        if [[ ! "${file}" =  ./${ARCHIVE_DIR}* ]]
+        then
+            GLOBAL_NOTES_LIST[$index]="${file}"
+            index+=1;
+            GLOBAL_NUM_NOTES+=1;
+        else
+            GLOBAL_ARCHIVE_LIST[$arch_index]="${file}"
+            arch_index+=1;
+            GLOBAL_NUM_ARCHIVE+=1;
+        fi
     done
 
 }

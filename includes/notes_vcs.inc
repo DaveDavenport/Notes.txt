@@ -141,6 +141,7 @@ function notes_vcs_remove_file()
 
 function notes_vcs_move_file()
 {
+    echo $GIT mv "$1" "$2"
     $GIT mv "$1" "$2"
     if [ $? != 0 ]
     then

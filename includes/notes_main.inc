@@ -104,6 +104,13 @@ function notes_complete_command_delete()
     exit 0;
 }
 
+function notes_complete_command_archive()
+{
+    echo "${!GLOBAL_NOTES_LIST[@]}"
+    popd > /dev/null
+    exit 0;
+}
+
 function notes_complete_command_edit()
 {
     echo "${!GLOBAL_NOTES_LIST[@]}"
@@ -384,6 +391,8 @@ function notes_validate_config()
         exit 1;
     fi
 
+    notes_check_directory "${NOTE_DIR}/${ARCHIVE_DIR}"
+
     # md5sum
     if [ ! -x $(which md5sum) ]
     then
@@ -414,4 +423,20 @@ function notes_check_file()
     then
         notes_error "Could not find file: ${1}"
     fi
+}
+
+
+function notes_main_run_archive()
+{
+    local note_id="$1"
+    local note_filename;
+    # Get note file
+    notes_get_from_id "$note_id" note_filename;
+
+    PROJECT=$(dirname "${note_filename}");
+    echo ${PROJECT};
+    # validate category name.
+    notes_check_directory "${ARCHIVE_DIR}/${PROJECT}"
+
+    notes_vcs_move_file "${note_filename}" "./${ARCHIVE_DIR}/${note_filename}"
 }
