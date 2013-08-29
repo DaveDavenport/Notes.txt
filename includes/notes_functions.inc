@@ -31,8 +31,8 @@
 ##
 function notes_global_load_list()
 {
-    declare -i index=1; 
-    declare -i arch_index=1; 
+    declare -i index=0; 
+    declare -i arch_index=0; 
     local __gl_nl=$(find -type f -iname [0-9]*txt | awk -F/ '{print $NF"|"$0}' | sort -n | cut -d"|" -f2)
 
     for file in ${__gl_nl}
@@ -345,17 +345,11 @@ function __internal_notes_list()
 {
     declare -a NLIST;
     # TODO: I need a better way todo this.
-    if [ ${1} == "archive" ]
+    if [ ${#} -gt 0 ]
     then
-        for tmp in ${!GLOBAL_ARCHIVE_LIST[@]}
-        do
-            NLIST[$tmp]=${GLOBAL_ARCHIVE_LIST[$tmp]};
-        done
+        NLIST=( "${@}" )
     else
-        for tmp in ${!GLOBAL_NOTES_LIST[@]}
-        do
-            NLIST[$tmp]=${GLOBAL_NOTES_LIST[$tmp]};
-        done
+        NLIST=( "${GLOBAL_NOTES_LIST[@]}" )
     fi
     # Get max category length
     declare -i max_cat_length=7;

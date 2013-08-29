@@ -481,7 +481,7 @@ function notes_main_run_archive_add()
 function notes_main_run_archive_list()
 {
     notes_info "Listing archive notes:"
-    __internal_notes_list "archive"
+    __internal_notes_list "${GLOBAL_ARCHIVE_LIST[@]}" 
 }
 
 #TODO
