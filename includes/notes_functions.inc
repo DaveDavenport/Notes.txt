@@ -343,6 +343,20 @@ function __internal_filter_list()
 
 function __internal_notes_list()
 {
+    declare -a NLIST;
+    # TODO: I need a better way todo this.
+    if [ ${1} == "archive" ]
+    then
+        for tmp in ${!GLOBAL_ARCHIVE_LIST[@]}
+        do
+            NLIST[$tmp]=${GLOBAL_ARCHIVE_LIST[$tmp]};
+        done
+    else
+        for tmp in ${!GLOBAL_NOTES_LIST[@]}
+        do
+            NLIST[$tmp]=${GLOBAL_NOTES_LIST[$tmp]};
+        done
+    fi
     # Get max category length
     declare -i max_cat_length=7;
     declare -i id_length=2;
@@ -360,9 +374,9 @@ function __internal_notes_list()
 
     # This function is the slowest.
     # Optimizing this would be good.
-    for index in ${!GLOBAL_NOTES_LIST[@]}
+    for index in ${!NLIST[@]}
     do
-        local file=${GLOBAL_NOTES_LIST[index]}
+        local file=${NLIST[index]}
         # ID.
         local id=$index;
         length=${#id}
@@ -410,9 +424,9 @@ function __internal_notes_list()
 
     notes_timestamp "__internal_notes_list(): Headers"
     # Print hits
-    for index in ${!GLOBAL_NOTES_LIST[@]}
+    for index in ${!NLIST[@]}
     do
-        local file=${GLOBAL_NOTES_LIST[index]}
+        local file=${NLIST[index]}
         declare -i id=$index
 
         local date=""

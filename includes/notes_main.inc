@@ -106,8 +106,24 @@ function notes_complete_command_delete()
 
 function notes_complete_command_archive()
 {
-    echo "${!GLOBAL_NOTES_LIST[@]}"
-    popd > /dev/null
+    # Toplevel
+    if [ "$#" == 0 ]
+    then
+        # List of archive commands.
+        for cmd in "${ARCHIVE_COMMANDS[@]}"
+        do
+            echo "${cmd}"
+        done
+        popd > /dev/null
+    elif [ "$#" == 1 ] && [ "${1}" == "add" ] 
+    then
+        echo "${!GLOBAL_NOTES_LIST[@]}"
+        popd > /dev/null
+    elif [ "$#" == 1 ] && [ "${1}" == "restore" ] 
+    then
+        echo "${!GLOBAL_ARCHIVE_LIST[@]}"
+        popd > /dev/null
+    fi
     exit 0;
 }
 
@@ -428,6 +444,27 @@ function notes_check_file()
 
 function notes_main_run_archive()
 {
+    # Automatically find, if available, the completion function.
+    local command=notes_main_run_archive_"${1}" 
+    
+    if [ "$#" -gt 0 ]
+    then
+        if [ "$(type -t $command)" == "function" ]
+        then
+            shift
+            $command "${@}"
+        else
+            notes_error "Function ${1} note found"
+            exit 1;
+        fi
+    else
+        notes_main_run_archive_list
+    fi
+}
+
+function notes_main_run_archive_add()
+{
+
     local note_id="$1"
     local note_filename;
     # Get note file
@@ -439,4 +476,16 @@ function notes_main_run_archive()
     notes_check_directory "${ARCHIVE_DIR}/${PROJECT}"
 
     notes_vcs_move_file "${note_filename}" "./${ARCHIVE_DIR}/${note_filename}"
+}
+#TODO
+function notes_main_run_archive_list()
+{
+    notes_info "Listing archive notes:"
+    __internal_notes_list "archive"
+}
+
+#TODO
+function notes_main_run_archive_restore()
+{
+    notes_info "Restoring note from archive: (unimplemented.)"
 }

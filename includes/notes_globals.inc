@@ -53,3 +53,9 @@ declare -a GLOBAL_ARCHIVE_LIST;
 declare -i GLOBAL_NUM_ARCHIVE=0;
 
 ARCHIVE_DIR=".archive/"
+
+ARCHIVE_COMMANDS=(
+    "add"
+    "restore"
+    "list"
+)
